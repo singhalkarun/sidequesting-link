@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SideQuesting</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font: 16px/1.6 -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: #ffffff; color: #17181A;
+  }
+  @media (prefers-color-scheme: dark) { body { background: #0E0F11; color: #ECEDEF; } }
+  .card { max-width: 340px; padding: 32px 24px; text-align: center; }
+  h1 { font-size: 26px; letter-spacing: -0.5px; margin: 0 0 6px; }
+  p { color: #85888C; margin: 0 0 22px; font-size: 14.5px; }
+  .step { display: flex; gap: 10px; align-items: center; text-align: left; margin: 14px 0; font-size: 14.5px; }
+  .n {
+    flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  a.btn {
+    display: block; padding: 13px; border-radius: 12px; font-weight: 600; text-decoration: none;
+    margin-top: 8px; font-size: 15px;
+  }
+  .primary { background: #17181A; color: #fff; }
+  @media (prefers-color-scheme: dark) { .primary { background: #ECEDEF; color: #101113; } }
+  .secondary { border: 1px solid #85888C55; color: inherit; margin-top: 10px; }
+  .fine { font-size: 12px; color: #85888C; margin-top: 18px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>SideQuesting</h1>
+    <p>Real-world side quests, with proof. Two steps:</p>
+    <div class="step"><span class="n">1</span><span>Install the free <b>Expo Go</b> app</span></div>
+    <a class="btn secondary" href="https://apps.apple.com/app/expo-go/id982107779">Expo Go — App Store (iPhone)</a>
+    <a class="btn secondary" href="https://play.google.com/store/apps/details?id=host.exp.exponent">Expo Go — Play Store (Android)</a>
+    <div class="step" style="margin-top:22px"><span class="n">2</span><span>Come back here and open the app</span></div>
+    <a class="btn primary" href="exp://u.expo.dev/dfa37669-9015-487d-a8ba-0b4856b63308?channel-name=preview&runtime-version=exposdk:54.0.0">Open SideQuesting</a>
+    <div class="fine">Opens inside Expo Go. If nothing happens, install Expo Go first, then tap again.</div>
+  </div>
+</body>
+</html>
