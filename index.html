@@ -34,37 +34,21 @@
 <body>
   <div class="card">
     <h1>SideQuesting</h1>
-    <p>Real-world side quests, with proof. Two steps:</p>
-    <div class="step"><span class="n">1</span><span>Install the free <b>Expo Go</b> app</span></div>
-    <a class="btn secondary" id="store-ios" href="https://apps.apple.com/app/expo-go/id982107779">Expo Go — App Store</a>
-    <a class="btn secondary" id="store-android" href="https://play.google.com/store/apps/details?id=host.exp.exponent">Expo Go — Play Store</a>
-    <div class="step" style="margin-top:22px"><span class="n">2</span><span>Come back here and open the app</span></div>
-    <a class="btn primary" id="open-ios" href="#">Open SideQuesting (iPhone)</a>
-    <a class="btn primary" id="open-android" href="#">Open SideQuesting (Android)</a>
-    <div class="fine" id="hint">Opens inside Expo Go. If nothing happens, install Expo Go first, then tap again.</div>
+    <p>Real-world side quests, with proof.</p>
+    <div id="android-flow">
+      <a class="btn primary" href="https://expo.dev/artifacts/eas/_jOwE2GcRMgxne-KMiJ7hOTp8QxtOiCjvs_C_BKvrD4.apk">Download for Android</a>
+      <div class="fine">Android will warn about installing outside the Play Store — choose
+      "Install anyway". Updates arrive inside the app automatically after this.</div>
+    </div>
+    <div id="ios-flow" class="hide">
+      <p style="margin-bottom:8px">The iPhone version arrives with our TestFlight — soon.</p>
+      <div class="fine">Have an Android device? Open this page there instead.</div>
+    </div>
   </div>
   <script>
-    // Updated automatically by scripts/publish-preview.sh in the app repo.
-    var UPDATES = {
-      ios: "019ff597-2323-7df2-adcf-f77585fef994",
-      android: "019ff597-2323-7f8c-9e2e-f0bdfdb1d973"
-    };
-    var link = function (p) { return "exp://u.expo.dev/update/" + UPDATES[p]; };
-    document.getElementById("open-ios").href = link("ios");
-    document.getElementById("open-android").href = link("android");
-    var ua = navigator.userAgent;
-    var isIOS = /iPhone|iPad|iPod/i.test(ua);
-    var isAndroid = /Android/i.test(ua);
-    if (isIOS) {
-      document.getElementById("open-android").classList.add("hide");
-      document.getElementById("store-android").classList.add("hide");
-      document.getElementById("open-ios").textContent = "Open SideQuesting";
-    } else if (isAndroid) {
-      document.getElementById("open-ios").classList.add("hide");
-      document.getElementById("store-ios").classList.add("hide");
-      document.getElementById("open-android").textContent = "Open SideQuesting";
-    } else {
-      document.getElementById("hint").textContent = "Open this page on your phone to install.";
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      document.getElementById("android-flow").classList.add("hide");
+      document.getElementById("ios-flow").classList.remove("hide");
     }
   </script>
 </body>
