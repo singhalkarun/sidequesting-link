@@ -1,8 +1,8 @@
 {
-  "versionCode": 8,
+  "versionCode": 10,
   "forceBelow": 0,
   "updates": {
-    "ios": "019ff6ba-de9e-7462-a0fd-283b5dc387e2",
-    "android": "019ff6ba-de9e-78da-81f1-9daa0e7d1ff3"
+    "ios": "019ff6c3-0a52-77f1-a466-832102a381bf",
+    "android": "019ff6c3-0a52-79b5-92b5-029db7d9b467"
   }
 }
