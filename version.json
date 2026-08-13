@@ -1,9 +1,9 @@
 {
-  "versionCode": 35,
+  "versionCode": 36,
   "forceBelow": 18,
   "updates": {
-    "ios": "019ffa8a-69b3-71b6-913b-e8fe6c381c77",
-    "android": "019ffa8a-69b3-7c1e-81ca-3555d42cae3a"
+    "ios": "019ffa8e-3c33-7937-8809-f0dd77338e40",
+    "android": "019ffa8e-3c33-7f1e-9c62-66bb3f4a73f4"
   },
   "apkUrl": "https://expo.dev/artifacts/eas/v1LhCcVUb5cDA6BnSFFBZlo-Eh6kpxXT70pEKJ7DotA.apk",
   "requiredNativeModules": [
