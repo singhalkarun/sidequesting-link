@@ -1,12 +1,13 @@
 {
-  "versionCode": 41,
-  "forceBelow": 18,
+  "versionCode": 42,
+  "forceBelow": 42,
   "updates": {
-    "ios": "019ffad1-1c4f-7c52-b62a-9f2dc46bc40c",
-    "android": "019ffad1-1c4f-7716-a2e9-152fea37e1a5"
+    "ios": "019ffad3-9db0-7419-81d6-ec850a4714eb",
+    "android": "019ffad3-9db0-7f9e-acf7-a7c4819cce52"
   },
   "apkUrl": "https://expo.dev/artifacts/eas/ZHdP6LoQ5-U5Q70YwV7ZJXjBSVUl-7jJyWQBFpeNeo4.apk",
   "requiredNativeModules": [
-    "RNSentry"
+    "RNSentry",
+    "ExpoApplication"
   ]
 }
