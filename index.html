@@ -3,52 +3,133 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SideQuesting</title>
+<title>SideQuesting — do real things, keep the proof</title>
+<meta name="description" content="Real-world side quests with photo proof, streaks, and accountability partners. Build a record of becoming.">
 <style>
   :root { color-scheme: light dark; }
+  * { box-sizing: border-box; margin: 0; }
   body {
-    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    font: 16px/1.6 -apple-system, "Segoe UI", system-ui, sans-serif;
+    font: 16px/1.65 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
     background: #ffffff; color: #17181A;
+    -webkit-font-smoothing: antialiased;
   }
-  @media (prefers-color-scheme: dark) { body { background: #0E0F11; color: #ECEDEF; } }
-  .card { max-width: 340px; padding: 32px 24px; text-align: center; }
-  h1 { font-size: 26px; letter-spacing: -0.5px; margin: 0 0 6px; }
-  p { color: #85888C; margin: 0 0 22px; font-size: 14.5px; }
-  .step { display: flex; gap: 10px; align-items: center; text-align: left; margin: 14px 0; font-size: 14.5px; }
-  .n {
-    flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor;
-    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  @media (prefers-color-scheme: dark) {
+    body { background: #0E0F11; color: #ECEDEF; }
+    .muted { color: #8B8E93 !important; }
+    .card { border-color: #242629 !important; }
+    .btn-primary { background: #ECEDEF !important; color: #101113 !important; }
+    .btn-ghost { border-color: #242629 !important; color: #ECEDEF !important; }
+    footer { border-color: #242629 !important; }
+    .step { border-color: #242629 !important; }
   }
-  a.btn {
-    display: block; padding: 13px; border-radius: 12px; font-weight: 600; text-decoration: none;
-    margin-top: 8px; font-size: 15px;
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  .muted { color: #85888C; }
+  .accent { color: #1C7A57; }
+  @media (prefers-color-scheme: dark) { .accent { color: #3BAE82; } }
+
+  header { padding: 28px 0; }
+  .brand { font-size: 19px; font-weight: 700; letter-spacing: -0.5px; }
+
+  .hero { padding: 72px 0 64px; text-align: center; }
+  .hero h1 {
+    font-size: clamp(38px, 7vw, 58px); font-weight: 750; letter-spacing: -0.035em;
+    line-height: 1.05; text-wrap: balance;
   }
-  .primary { background: #17181A; color: #fff; }
-  @media (prefers-color-scheme: dark) { .primary { background: #ECEDEF; color: #101113; } }
-  .secondary { border: 1px solid #85888C55; color: inherit; margin-top: 10px; }
-  .fine { font-size: 12px; color: #85888C; margin-top: 18px; }
+  .hero p {
+    font-size: 18px; max-width: 34em; margin: 22px auto 0; line-height: 1.6;
+  }
+  .cta-row { margin-top: 36px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 15px 28px; border-radius: 12px;
+    font-size: 16px; font-weight: 600; text-decoration: none; letter-spacing: -0.01em;
+  }
+  .btn-primary { background: #17181A; color: #fff; }
+  .btn-ghost { border: 1px solid #EAEBEC; color: #17181A; }
+  .cta-note { margin-top: 14px; font-size: 13px; }
+
+  .features {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px; padding: 8px 0 64px;
+  }
+  .card { border: 1px solid #EAEBEC; border-radius: 16px; padding: 26px 24px; text-align: left; }
+  .card h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .card p { font-size: 14.5px; margin-top: 8px; line-height: 1.6; }
+
+  .loop { padding: 0 0 72px; text-align: center; }
+  .loop-line {
+    display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+    font-size: 15px; font-weight: 600;
+  }
+  .step { border: 1px solid #EAEBEC; border-radius: 999px; padding: 9px 20px; }
+
+  footer {
+    border-top: 1px solid #EAEBEC; padding: 28px 0 48px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    font-size: 13px;
+  }
   .hide { display: none; }
 </style>
 </head>
 <body>
-  <div class="card">
-    <h1>SideQuesting</h1>
-    <p>Real-world side quests, with proof.</p>
-    <div id="android-flow">
-      <a class="btn primary" href="https://expo.dev/artifacts/eas/v1LhCcVUb5cDA6BnSFFBZlo-Eh6kpxXT70pEKJ7DotA.apk">Download for Android</a>
-      <div class="fine">Android will warn about installing outside the Play Store — choose
-      "Install anyway". Updates arrive inside the app automatically after this.</div>
-    </div>
-    <div id="ios-flow" class="hide">
-      <p style="margin-bottom:8px">The iPhone version arrives with our TestFlight — soon.</p>
-      <div class="fine">Have an Android device? Open this page there instead.</div>
-    </div>
+  <div class="wrap">
+    <header><div class="brand">SideQuesting</div></header>
+
+    <section class="hero">
+      <h1>Do real things.<br>Keep the proof.</h1>
+      <p class="muted">
+        Real-world side quests — watch a sunrise, walk 10,000 steps, talk to a stranger.
+        Complete them with live photo proof, keep your streak honest, and build
+        a record of who you're becoming.
+      </p>
+      <div class="cta-row" id="android-flow">
+        <a class="btn btn-primary" href="https://expo.dev/artifacts/eas/v1LhCcVUb5cDA6BnSFFBZlo-Eh6kpxXT70pEKJ7DotA.apk">Download for Android</a>
+      </div>
+      <div class="cta-row hide" id="ios-flow">
+        <span class="btn btn-ghost">iPhone version coming soon</span>
+      </div>
+      <div class="cta-note muted" id="cta-note">
+        Free · installs directly, updates itself · iPhone soon
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="card">
+        <h3>Streaks that mean it</h3>
+        <p class="muted">A day only counts when every daily quest you've taken on is done.
+        No partial credit — and an honest ✗ when you miss.</p>
+      </div>
+      <div class="card">
+        <h3><span class="accent">Proof</span>, not talk</h3>
+        <p class="muted">Live photos, not gallery uploads. Accountability partners who
+        sign off on what you claim. Points follow proof.</p>
+      </div>
+      <div class="card">
+        <h3>A record, not a feed</h3>
+        <p class="muted">Everything you finish lands in your record — and your people
+        see it. Meet the kind of people who do things.</p>
+      </div>
+    </section>
+
+    <section class="loop">
+      <div class="loop-line">
+        <span class="step">Pick a quest</span>
+        <span class="step">Do the thing</span>
+        <span class="step">Prove it</span>
+        <span class="step accent">Repeat tomorrow</span>
+      </div>
+    </section>
+
+    <footer class="muted">
+      <span>© 2026 SideQuesting</span>
+      <span>Made in Bengaluru</span>
+    </footer>
   </div>
   <script>
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       document.getElementById("android-flow").classList.add("hide");
       document.getElementById("ios-flow").classList.remove("hide");
+      document.getElementById("cta-note").textContent =
+        "We'll be on TestFlight soon — Android is live today.";
     }
   </script>
 </body>
