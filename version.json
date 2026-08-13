@@ -5,7 +5,7 @@
     "ios": "019ffb2a-5e7c-77da-981c-bdcf3e153811",
     "android": "019ffb2a-5e7c-71d3-a2ea-f18747f56afe"
   },
-  "apkUrl": "https://expo.dev/artifacts/eas/ZHdP6LoQ5-U5Q70YwV7ZJXjBSVUl-7jJyWQBFpeNeo4.apk",
+  "apkUrl": "https://expo.dev/artifacts/eas/T1r4I3ugi7v9-hEaSu_O_D5ew3srvnQW_ohTy0f98p4.apk",
   "requiredNativeModules": [
     "RNSentry",
     "ExpoApplication"
