@@ -1,9 +1,9 @@
 {
-  "versionCode": 44,
+  "versionCode": 45,
   "forceBelow": 42,
   "updates": {
-    "ios": "019ffadb-f690-741f-bc94-2fbbb85fe287",
-    "android": "019ffadb-f690-7bd2-b9f0-27a9d2f2e84f"
+    "ios": "019ffb29-3032-7622-8945-630ee57300ff",
+    "android": "019ffb29-3032-7aa1-b749-c0535c61d660"
   },
   "apkUrl": "https://expo.dev/artifacts/eas/ZHdP6LoQ5-U5Q70YwV7ZJXjBSVUl-7jJyWQBFpeNeo4.apk",
   "requiredNativeModules": [
