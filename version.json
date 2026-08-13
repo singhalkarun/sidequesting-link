@@ -1,9 +1,12 @@
 {
-  "versionCode": 17,
-  "forceBelow": 0,
+  "versionCode": 18,
+  "forceBelow": 18,
   "updates": {
-    "ios": "019ff9bb-700a-7af5-9ef6-bd1b69ec27e2",
-    "android": "019ff9bb-700a-79e6-b918-cc6e5eb99af5"
+    "ios": "019ff9bc-e935-7a28-b2e5-b2708e7d371e",
+    "android": "019ff9bc-e935-7899-91d1-a929cb6082ea"
   },
-  "apkUrl": "https://expo.dev/artifacts/eas/v1LhCcVUb5cDA6BnSFFBZlo-Eh6kpxXT70pEKJ7DotA.apk"
+  "apkUrl": "https://expo.dev/artifacts/eas/v1LhCcVUb5cDA6BnSFFBZlo-Eh6kpxXT70pEKJ7DotA.apk",
+  "requiredNativeModules": [
+    "RNSentry"
+  ]
 }
