@@ -1,9 +1,9 @@
 {
-  "versionCode": 86,
+  "versionCode": 87,
   "forceBelow": 42,
   "updates": {
-    "ios": "019ffedc-7942-7fe2-9d5a-adbf3935bfe6",
-    "android": "019ffedc-7942-784c-aa7b-c8450dd1d2b9"
+    "ios": "019ffee0-1f1e-74ce-a1fc-649aa4829ec9",
+    "android": "019ffee0-1f1e-7f82-88e5-99f5a11b6443"
   },
   "apkUrl": "https://expo.dev/artifacts/eas/j-C269mN-iITXE5K1DNUT3zq6hPGkRlHDoOfNGGNTDI.apk",
   "requiredNativeModules": [
