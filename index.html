@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SideQuesting — do hard things, every day</title>
 <meta name="description" content="Real-world quests proven with live photos. Daily goals that build honest streaks. A feed of things people actually did.">
+<meta property="og:title" content="SideQuesting — do hard things, every day">
+<meta property="og:description" content="Real-world quests with live-photo proof. Honest streaks. A feed of things people actually did.">
+<meta property="og:image" content="https://sidequesting.club/og.jpg">
+<meta property="og:url" content="https://sidequesting.club">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
 <style>
   :root {
     color-scheme: light dark;
@@ -38,11 +45,34 @@
   .btn-ghost { border: 1px solid var(--border); color: var(--ink); }
   .cta-note { margin-top: 14px; font-size: 13px; }
 
-  .phones { display: flex; justify-content: center; align-items: flex-start; gap: 28px;
-    padding: 30px 0 10px; overflow: hidden; }
-  .phones img { width: min(320px, 72vw); height: auto; }
-  .phones img:last-child { margin-top: 44px; }
-  @media (max-width: 640px) { .phones img:last-child { display: none; } }
+  .phones { display: flex; justify-content: center; align-items: flex-start; gap: 34px;
+    padding: 40px 0 16px; overflow: hidden; }
+  .phones img { width: min(300px, 70vw); height: auto; border-radius: 28px;
+    border: 1px solid var(--border); box-shadow: 0 30px 70px rgba(15,17,19,0.18); }
+  .phones img:first-child { transform: rotate(-2.5deg); }
+  .phones img:last-child { margin-top: 52px; transform: rotate(2.5deg); }
+  @media (max-width: 640px) { .phones img:last-child { display: none; }
+    .phones img:first-child { transform: none; } }
+
+  .ticker { overflow: hidden; border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline); margin-top: 44px; padding: 13px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .ticker-track { display: flex; gap: 34px; width: max-content;
+    animation: tick 36s linear infinite; }
+  .ticker span { font-size: 13.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .ticker b { color: var(--green); font-weight: 700; }
+  @keyframes tick { to { transform: translateX(-50%); } }
+
+  .reveal { opacity: 0; transform: translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+  .card { transition: border-color 0.2s ease, transform 0.2s ease; }
+  .card:hover { border-color: var(--faint); transform: translateY(-2px); }
+  ::selection { background: var(--green); color: #fff; }
 
   .thesis { text-align: center; padding: 56px 0 8px; }
   .thesis p { font-size: clamp(20px, 3.4vw, 27px); font-weight: 700; letter-spacing: -0.02em;
@@ -95,17 +125,19 @@
       <div class="cta-note muted" id="cta-note">Free · Android installs directly · iPhone beta via TestFlight</div>
     </section>
 
-    <section class="phones">
+    <div class="ticker"><div class="ticker-track"><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span></div></div>
+
+    <section class="phones reveal">
       <img src="app-today.png" alt="Daily goals with an honest streak" loading="lazy">
       <img src="app-feed.png" alt="A feed of completed quests with live-photo proof" loading="lazy">
     </section>
 
-    <section class="thesis">
+    <section class="thesis reveal">
       <p>No opinions. No reposts. Every post is something someone
       <span class="accent">actually did.</span></p>
     </section>
 
-    <section class="steps">
+    <section class="steps reveal">
       <div class="step"><div class="n">01</div><h3>Take on a quest</h3>
         <p>Talk to a stranger. Watch the sunrise. Cook a meal from scratch. Real life, not a checklist app.</p></div>
       <div class="step"><div class="n">02</div><h3>Prove it live</h3>
@@ -114,7 +146,7 @@
         <p>Daily goals count only when every one is done. Points, streaks, and the leaderboard are earned — never given.</p></div>
     </section>
 
-    <section class="features">
+    <section class="features reveal">
       <div class="card">
         <h3>Quests</h3>
         <p class="muted">Weekly featured challenges and a catalog worth doing.
@@ -137,7 +169,7 @@
       </div>
     </section>
 
-    <section class="last-cta">
+    <section class="last-cta reveal">
       <h2>Your record starts with one quest.</h2>
       <div class="cta-row">
         <a class="btn btn-primary" id="bottom-cta" href="https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk">Get SideQuesting</a>
@@ -151,6 +183,10 @@
     </footer>
   </div>
   <script>
+    const io = new IntersectionObserver((es) => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }), { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       document.getElementById("android-flow").classList.add("hide");
       document.getElementById("ios-flow").classList.remove("hide");
