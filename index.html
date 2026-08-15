@@ -4,109 +4,157 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SideQuesting — do hard things, every day</title>
-<meta name="description" content="Real-world quests proven with photos. Daily goals that build streaks. A record of who you're becoming.">
+<meta name="description" content="Real-world quests proven with live photos. Daily goals that build honest streaks. A feed of things people actually did.">
 <style>
-  :root { color-scheme: light dark; }
-  * { box-sizing: border-box; margin: 0; }
-  body {
-    font: 16px/1.65 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
-    background: #ffffff; color: #17181A;
-    -webkit-font-smoothing: antialiased;
+  :root {
+    color-scheme: light dark;
+    --page:#FFFFFF; --ink:#17181A; --muted:#85888C; --faint:#A9ACB0;
+    --border:#E9EAEB; --hairline:#F1F2F3; --green:#1C7A57; --badge:#F1F2F3;
   }
   @media (prefers-color-scheme: dark) {
-    body { background: #0E0F11; color: #ECEDEF; }
-    .muted { color: #8B8E93 !important; }
-    .card { border-color: #242629 !important; }
-    .btn-primary { background: #ECEDEF !important; color: #101113 !important; }
-    .btn-ghost { border-color: #242629 !important; color: #ECEDEF !important; }
-    footer { border-color: #242629 !important; }
+    :root { --page:#0E0F11; --ink:#ECEDEF; --muted:#8B8E93; --faint:#6A6D72;
+      --border:#242629; --hairline:#1E2023; --green:#3BAE82; --badge:#1F2124; }
   }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
-  .muted { color: #85888C; }
-  .accent { color: #1C7A57; }
-  @media (prefers-color-scheme: dark) { .accent { color: #3BAE82; } }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 16px/1.65 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+  .muted { color: var(--muted); }
+  .accent { color: var(--green); }
 
-  header { padding: 28px 0; }
-  .brand { font-size: 19px; font-weight: 700; letter-spacing: -0.5px; }
+  header { padding: 26px 0; display: flex; align-items: center; gap: 10px; }
+  .brand { font-size: 19px; font-weight: 800; letter-spacing: -0.03em; }
+  .mark { flex: none; }
 
-  .hero { padding: 76px 0 60px; text-align: center; }
-  .hero h1 {
-    font-size: clamp(38px, 7vw, 58px); font-weight: 750; letter-spacing: -0.035em;
-    line-height: 1.05; text-wrap: balance;
-  }
-  .hero p {
-    font-size: 18px; max-width: 30em; margin: 22px auto 0; line-height: 1.6;
-  }
-  .cta-row { margin-top: 36px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 15px 28px; border-radius: 12px;
-    font-size: 16px; font-weight: 600; text-decoration: none; letter-spacing: -0.01em;
-  }
-  .btn-primary { background: #17181A; color: #fff; }
-  .btn-ghost { border: 1px solid #EAEBEC; color: #17181A; }
+  .hero { padding: 64px 0 40px; text-align: center; }
+  .hero h1 { font-size: clamp(42px, 8vw, 72px); font-weight: 800; letter-spacing: -0.04em;
+    line-height: 1.03; text-wrap: balance; }
+  .hero h1 .accent { display: block; }
+  .hero p { font-size: 19px; max-width: 34em; margin: 22px auto 0; }
+  .cta-row { margin-top: 34px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 15px 28px; border-radius: 12px;
+    font-size: 16px; font-weight: 600; text-decoration: none; letter-spacing: -0.01em; }
+  .btn-primary { background: var(--ink); color: var(--page); }
+  .btn-ghost { border: 1px solid var(--border); color: var(--ink); }
   .cta-note { margin-top: 14px; font-size: 13px; }
 
-  .features {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px; padding: 8px 0 72px;
-  }
-  .card { border: 1px solid #EAEBEC; border-radius: 16px; padding: 26px 24px; text-align: left; }
-  .card h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
-  .card p { font-size: 14.5px; margin-top: 8px; line-height: 1.6; }
+  .phones { display: flex; justify-content: center; align-items: flex-start; gap: 28px;
+    padding: 30px 0 10px; overflow: hidden; }
+  .phones img { width: min(320px, 72vw); height: auto; }
+  .phones img:last-child { margin-top: 44px; }
+  @media (max-width: 640px) { .phones img:last-child { display: none; } }
 
-  footer {
-    border-top: 1px solid #EAEBEC; padding: 28px 0 48px;
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-    font-size: 13px;
-  }
+  .thesis { text-align: center; padding: 56px 0 8px; }
+  .thesis p { font-size: clamp(20px, 3.4vw, 27px); font-weight: 700; letter-spacing: -0.02em;
+    max-width: 26em; margin: 0 auto; text-wrap: balance; }
+
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px; padding: 48px 0 8px; }
+  .step { text-align: left; padding: 4px 6px; }
+  .step .n { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--green); }
+  .step h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-top: 6px; }
+  .step p { font-size: 14.5px; margin-top: 6px; color: var(--muted); }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px; padding: 44px 0 8px; }
+  .card { border: 1px solid var(--border); border-radius: 16px; padding: 26px 24px; }
+  .card h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .card p { font-size: 14.5px; margin-top: 8px; }
+
+  .last-cta { text-align: center; padding: 64px 0 72px; }
+  .last-cta h2 { font-size: clamp(26px, 5vw, 38px); font-weight: 800; letter-spacing: -0.03em; }
+
+  footer { border-top: 1px solid var(--border); padding: 26px 0 48px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13px; }
+  footer a { color: inherit; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .legal-links a { margin-left: 14px; }
   .hide { display: none; }
-  .byline { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .byline { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 </style>
 </head>
 <body>
   <div class="wrap">
-    <header><div class="brand">SideQuesting</div></header>
+    <header>
+      <svg class="mark" width="22" height="22" viewBox="0 0 96 96"><line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><polygon points="34,18 78,28 34,45" fill="currentColor"/></svg>
+      <div class="brand">SideQuesting</div>
+    </header>
 
     <section class="hero">
-      <h1>Do hard things.<br>Every day.</h1>
-      <p class="muted">
-        For people who want to grow — not just plan to.
-      </p>
+      <h1>Do hard things.<span class="accent">Every day.</span></h1>
+      <p class="muted">Real-world quests proven with live photos. Daily goals that build honest
+      streaks. And people who keep you honest — because someone should.</p>
       <div class="cta-row" id="android-flow">
         <a class="btn btn-primary" href="https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk">Download for Android</a>
+        <a class="btn btn-ghost" href="https://testflight.apple.com/join/9jrmXcTS">iPhone beta</a>
       </div>
       <div class="cta-row hide" id="ios-flow">
         <a class="btn btn-primary" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
+        <a class="btn btn-ghost" href="https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk">Android</a>
       </div>
-      <div class="cta-note muted" id="cta-note">
-        Free · Android installs directly · iPhone beta via TestFlight
-      </div>
+      <div class="cta-note muted" id="cta-note">Free · Android installs directly · iPhone beta via TestFlight</div>
+    </section>
+
+    <section class="phones">
+      <img src="app-today.png" alt="Daily goals with an honest streak" loading="lazy">
+      <img src="app-feed.png" alt="A feed of completed quests with live-photo proof" loading="lazy">
+    </section>
+
+    <section class="thesis">
+      <p>No opinions. No reposts. Every post is something someone
+      <span class="accent">actually did.</span></p>
+    </section>
+
+    <section class="steps">
+      <div class="step"><div class="n">01</div><h3>Take on a quest</h3>
+        <p>Talk to a stranger. Watch the sunrise. Cook a meal from scratch. Real life, not a checklist app.</p></div>
+      <div class="step"><div class="n">02</div><h3>Prove it live</h3>
+        <p>Photo quests open the camera — no gallery uploads, no fakes. Honor quests take your word. That's the deal.</p></div>
+      <div class="step"><div class="n">03</div><h3>Keep the streak</h3>
+        <p>Daily goals count only when every one is done. Points, streaks, and the leaderboard are earned — never given.</p></div>
     </section>
 
     <section class="features">
       <div class="card">
         <h3>Quests</h3>
-        <p class="muted">Real-world challenges — watch a sunrise, talk to a stranger.
-        Prove them with live photos. <span class="accent">Points follow proof.</span></p>
+        <p class="muted">Weekly featured challenges and a catalog worth doing.
+        <span class="accent">Points follow proof.</span></p>
       </div>
       <div class="card">
         <h3>Daily goals</h3>
-        <p class="muted">Small disciplines, done every day. A day only counts when
-        all of them are done — that's what keeps a streak honest.</p>
+        <p class="muted">Small disciplines, kept private. One perfect day at a time —
+        that's what keeps a streak honest.</p>
+      </div>
+      <div class="card">
+        <h3>Partners</h3>
+        <p class="muted">Some quests need a witness. Pick one when you register —
+        they verify your proof and their name goes on it.</p>
+      </div>
+      <div class="card">
+        <h3>The feed</h3>
+        <p class="muted">Completed quests only. Cheer people on, take on what they
+        finished, climb the weekly leaderboard.</p>
+      </div>
+    </section>
+
+    <section class="last-cta">
+      <h2>Your record starts with one quest.</h2>
+      <div class="cta-row">
+        <a class="btn btn-primary" id="bottom-cta" href="https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk">Get SideQuesting</a>
       </div>
     </section>
 
     <footer class="muted">
-      <span>© 2026 SideQuesting</span>
+      <span>© 2026 Ambition Forge Private Limited</span>
       <span>Made with <span class="accent">&hearts;</span> by <a href="https://instagram.com/singhalkarun" class="byline">Karun</a> in Bengaluru</span>
+      <span class="legal-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/delete-account.html">Delete account</a></span>
     </footer>
   </div>
   <script>
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       document.getElementById("android-flow").classList.add("hide");
       document.getElementById("ios-flow").classList.remove("hide");
-      document.getElementById("cta-note").textContent =
-        "We'll be on TestFlight soon — Android is live today.";
+      document.getElementById("bottom-cta").href = "https://testflight.apple.com/join/9jrmXcTS";
     }
   </script>
 </body>
