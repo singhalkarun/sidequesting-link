@@ -47,12 +47,14 @@
 
   .phones { display: flex; justify-content: center; align-items: flex-start; gap: 34px;
     padding: 40px 0 16px; overflow: hidden; }
-  .phones img { width: min(300px, 70vw); height: auto; border-radius: 28px;
-    border: 1px solid var(--border); box-shadow: 0 30px 70px rgba(15,17,19,0.18); }
-  .phones img:first-child { transform: rotate(-2.5deg); }
-  .phones img:last-child { margin-top: 52px; transform: rotate(2.5deg); }
-  @media (max-width: 640px) { .phones img:last-child { display: none; }
-    .phones img:first-child { transform: none; } }
+  .ph { width: min(300px, 70vw); aspect-ratio: 3 / 5.6; overflow: hidden;
+    border-radius: 28px; border: 1px solid var(--border);
+    box-shadow: 0 30px 70px rgba(15,17,19,0.18); background: #fff; }
+  .ph img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .ph:first-child { transform: rotate(-2.5deg); }
+  .ph:last-child { margin-top: 52px; transform: rotate(2.5deg); }
+  @media (max-width: 640px) { .ph:last-child { display: none; }
+    .ph:first-child { transform: none; } }
 
   .ticker { overflow: hidden; border-top: 1px solid var(--hairline);
     border-bottom: 1px solid var(--hairline); margin-top: 44px; padding: 13px 0;
@@ -78,17 +80,11 @@
   .thesis p { font-size: clamp(20px, 3.4vw, 27px); font-weight: 700; letter-spacing: -0.02em;
     max-width: 26em; margin: 0 auto; text-wrap: balance; }
 
-  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px; padding: 48px 0 8px; }
-  .step { text-align: left; padding: 4px 6px; }
-  .step .n { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--green); }
-  .step h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-top: 6px; }
-  .step p { font-size: 14.5px; margin-top: 6px; color: var(--muted); }
-
-  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px; padding: 44px 0 8px; }
-  .card { border: 1px solid var(--border); border-radius: 16px; padding: 26px 24px; }
-  .card h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px; padding: 52px 0 8px; }
+  .card { border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+  .card .n { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--green); }
+  .card h3 { font-size: 17.5px; font-weight: 700; letter-spacing: -0.02em; margin-top: 8px; }
   .card p { font-size: 14.5px; margin-top: 8px; }
 
   .last-cta { text-align: center; padding: 64px 0 72px; }
@@ -128,8 +124,8 @@
     <div class="ticker"><div class="ticker-track"><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span></div></div>
 
     <section class="phones reveal">
-      <img src="app-today.png" alt="Daily goals with an honest streak" loading="lazy">
-      <img src="app-feed.png" alt="A feed of completed quests with live-photo proof" loading="lazy">
+      <div class="ph"><img src="app-today.png" alt="Daily goals with an honest streak" loading="lazy"></div>
+      <div class="ph"><img src="app-feed.png" alt="A feed of completed quests with live-photo proof" loading="lazy"></div>
     </section>
 
     <section class="thesis reveal">
@@ -137,36 +133,19 @@
       <span class="accent">actually did.</span></p>
     </section>
 
-    <section class="steps reveal">
-      <div class="step"><div class="n">01</div><h3>Take on a quest</h3>
-        <p>Talk to a stranger. Watch the sunrise. Cook a meal from scratch. Real life, not a checklist app.</p></div>
-      <div class="step"><div class="n">02</div><h3>Prove it live</h3>
-        <p>Photo quests open the camera — no gallery uploads, no fakes. Honor quests take your word. That's the deal.</p></div>
-      <div class="step"><div class="n">03</div><h3>Keep the streak</h3>
-        <p>Daily goals count only when every one is done. Points, streaks, and the leaderboard are earned — never given.</p></div>
-    </section>
-
     <section class="features reveal">
-      <div class="card">
-        <h3>Quests</h3>
-        <p class="muted">Weekly featured challenges and a catalog worth doing.
-        <span class="accent">Points follow proof.</span></p>
-      </div>
-      <div class="card">
-        <h3>Daily goals</h3>
-        <p class="muted">Small disciplines, kept private. One perfect day at a time —
-        that's what keeps a streak honest.</p>
-      </div>
-      <div class="card">
-        <h3>Partners</h3>
-        <p class="muted">Some quests need a witness. Pick one when you register —
-        they verify your proof and their name goes on it.</p>
-      </div>
-      <div class="card">
-        <h3>The feed</h3>
-        <p class="muted">Completed quests only. Cheer people on, take on what they
-        finished, climb the weekly leaderboard.</p>
-      </div>
+      <div class="card"><div class="n">01</div><h3>Take on a quest</h3>
+        <p class="muted">Talk to a stranger. Watch the sunrise. Cook a meal from scratch.
+        Real life, not a checklist. <span class="accent">Points follow proof.</span></p></div>
+      <div class="card"><div class="n">02</div><h3>Prove it live</h3>
+        <p class="muted">Photo quests open the camera — no gallery uploads, no fakes.
+        Honor quests take your word. Partner quests get a witness who verifies you.</p></div>
+      <div class="card"><div class="n">03</div><h3>Keep the streak</h3>
+        <p class="muted">Pick private daily goals. A day counts only when every one is
+        done — one perfect day at a time is what keeps a streak honest.</p></div>
+      <div class="card"><div class="n">04</div><h3>Build the record</h3>
+        <p class="muted">Every post in the feed is a completed quest. Cheer people on,
+        take on what they finished, climb the weekly leaderboard.</p></div>
     </section>
 
     <section class="last-cta reveal">
