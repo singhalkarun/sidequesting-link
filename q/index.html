@@ -47,33 +47,76 @@
   </div>
 
 <script>
+  // Public anon key — the same one the app ships with, and it only grants
+  // what RLS allows: reading active quests.
+  var SUPABASE = 'https://rvvqwdugquiinqapootg.supabase.co';
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2dnF3ZHVncXVpaW5xYXBvb3RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTEzMTMsImV4cCI6MjEwMTY2NzMxM30.HK-hwhinCEFlcn9BdDF5-RxnUqNGihQadPisxQWpi98';
+
   // Deep link without waiting for a native build. Universal Links (iOS
   // associatedDomains / Android intentFilters) are configured but only take
   // effect in the next binary; until then the custom scheme does the work.
   // If the app is installed, sidequesting://quest/<id> takes over and this
   // page is never seen. If it is not, nothing happens and the install
   // buttons below are the answer.
-  var id = new URLSearchParams(location.search).get('id') || location.pathname.split('/').filter(Boolean).pop();
-  var deep = id && id !== 'q' ? 'sidequesting://quest/' + encodeURIComponent(id) : 'sidequesting://';
-  document.getElementById('open').href = deep;
+  // Three ways in, because a shared card is read by a human who types it:
+  //   /q/<slug>        the printed address, routed here by 404.html
+  //   /q/?s=<slug>     what 404.html rewrites it to
+  //   /q/?id=<uuid>    what the app itself links to
+  var qs = new URLSearchParams(location.search);
+  var slug = qs.get('s');
+  var id = qs.get('id');
+  if (!slug && !id) {
+    var last = location.pathname.replace(/\/+$/, '').split('/').pop();
+    if (last && last !== 'q') slug = last;
+  }
 
-  // With a quest title we say what was done; without one — the streak card
-  // links here too — we fall back to the app's own line rather than
-  // inviting someone to "take this quest" when there is no quest.
-  var t = new URLSearchParams(location.search).get('t');
+  var openBtn = document.getElementById('open');
+  var tried = false;
+  // Only auto-open when there is a specific quest to open. Firing the bare
+  // scheme achieves nothing on a phone and stalls a desktop browser, which
+  // is where a typed address often gets pasted first.
+  function go(target, specific) {
+    openBtn.href = target;
+    if (specific && !tried && document.visibilityState === 'visible') {
+      tried = true;
+      setTimeout(function () { location.href = target; }, 200);
+    }
+  }
+
+  // The app routes by id, not by slug — sidequesting://quest/<id> is the only
+  // form it understands — so a typed address has to be resolved first.
+  // Anonymous reads of active quests exist for exactly this page.
+  if (id) {
+    go('sidequesting://quest/' + encodeURIComponent(id), true);
+  } else if (slug) {
+    fetch(SUPABASE + '/rest/v1/quests?select=id,title&slug=eq.' + encodeURIComponent(slug) + '&is_active=eq.true', {
+      headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (rows) {
+        var q = rows && rows[0];
+        if (q && q.title) {
+          document.getElementById('title').textContent = q.title;
+          document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
+          document.title = q.title + ' — SideQuesting';
+        }
+        // Only now can we send an installed app to the right screen. If the
+        // quest is gone or the lookup fails, opening the app at all is still
+        // better than a dead link.
+        go(q && q.id ? 'sidequesting://quest/' + encodeURIComponent(q.id) : 'sidequesting://', !!(q && q.id));
+      })
+      .catch(function () { go('sidequesting://', false); });
+  } else {
+    openBtn.href = 'sidequesting://';
+  }
+
+  var t = qs.get('t');
   if (t) {
     document.getElementById('title').textContent = t;
     document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
     document.title = t + ' — SideQuesting';
   }
 
-  // Try once, quietly, on first paint. Browsers ignore this when no handler
-  // is registered, which is exactly the fallback we want.
-  if (id) {
-    var tried = false;
-    var go = function () { if (!tried) { tried = true; location.href = deep; } };
-    if (document.visibilityState === 'visible') setTimeout(go, 250);
-  }
 </script>
 </body>
 </html>

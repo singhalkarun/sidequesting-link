@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SideQuesting</title>
+<script>
+  // GitHub Pages serves only real files, so sidequesting.club/q/<slug> — the
+  // address printed on every share card, because a human has to type it —
+  // would otherwise 404. Pages serves this file for unknown paths, so it
+  // forwards quest addresses to the real page and sends everything else home.
+  (function () {
+    var m = location.pathname.match(/^\/q\/([^\/?#]+)\/?$/);
+    location.replace(m ? '/q/?s=' + encodeURIComponent(m[1]) : '/');
+  })();
+</script>
+<meta http-equiv="refresh" content="0; url=/">
+</head>
+<body></body>
+</html>
