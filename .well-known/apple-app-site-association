@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["27C3YZ8DSX.club.sidequesting.app"],
+        "components": [{ "/": "/q/*", "comment": "Quest links open the app" }]
+      }
+    ]
+  }
+}

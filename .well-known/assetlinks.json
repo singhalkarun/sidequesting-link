@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "club.sidequesting.app",
+      "sha256_cert_fingerprints": [
+        "85:E7:CC:06:AF:34:6C:BF:93:F6:9B:13:5A:CD:24:1C:D6:CC:5E:18:9D:91:86:D9:58:64:72:69:ED:3C:A6:67",
+        "53:26:F9:6B:15:51:2C:EC:80:C6:99:02:22:B5:9F:2E:07:71:ED:2A:AD:4E:C2:EA:9F:01:86:E7:F6:83:7C:5B"
+      ]
+    }
+  }
+]

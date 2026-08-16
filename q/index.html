@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Take this quest — SideQuesting</title>
+<meta name="description" content="Someone did this on SideQuesting. Your turn.">
+<meta property="og:title" content="Take this quest — SideQuesting">
+<meta property="og:description" content="Real-world quests proven with live photos. Honest streaks.">
+<meta property="og:image" content="https://sidequesting.club/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: light dark;
+    --page:#FFFFFF; --ink:#17181A; --muted:#85888C; --border:#E9EAEB; --green:#1C7A57; }
+  @media (prefers-color-scheme: dark) {
+    :root { --page:#0E0F11; --ink:#ECEDEF; --muted:#8B8E93; --border:#242629; --green:#3BAE82; } }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 16px/1.6 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased;
+    min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+  .card { width: 100%; max-width: 420px; text-align: center; }
+  .mark { margin-bottom: 22px; }
+  h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+  .sub { color: var(--muted); font-size: 15px; margin-top: 10px; }
+  .btns { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; }
+  .btn { display: block; padding: 14px 20px; border-radius: 12px; text-decoration: none;
+    font-size: 15px; font-weight: 700; }
+  .primary { background: var(--ink); color: var(--page); }
+  .ghost { border: 1px solid var(--border); color: var(--ink); }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <svg class="mark" width="30" height="30" viewBox="0 0 96 96" aria-hidden="true">
+      <line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+      <polygon points="34,18 78,28 34,45" fill="var(--green)"/>
+    </svg>
+    <h1 id="title">Do hard things. Every day.</h1>
+    <p class="sub" id="sub">Real-world quests, proven with live photos. Honest daily streaks.</p>
+    <div class="btns">
+      <a class="btn primary" id="open" href="#">Open in the app</a>
+      <a class="btn ghost" id="ios" href="https://testflight.apple.com/join/9jrmXcTS">Get it on iPhone</a>
+      <a class="btn ghost" id="android" href="https://sidequesting.club/">Get it on Android</a>
+    </div>
+    <p class="note">Already have the app? It should have opened automatically.</p>
+  </div>
+
+<script>
+  // Deep link without waiting for a native build. Universal Links (iOS
+  // associatedDomains / Android intentFilters) are configured but only take
+  // effect in the next binary; until then the custom scheme does the work.
+  // If the app is installed, sidequesting://quest/<id> takes over and this
+  // page is never seen. If it is not, nothing happens and the install
+  // buttons below are the answer.
+  var id = new URLSearchParams(location.search).get('id') || location.pathname.split('/').filter(Boolean).pop();
+  var deep = id && id !== 'q' ? 'sidequesting://quest/' + encodeURIComponent(id) : 'sidequesting://';
+  document.getElementById('open').href = deep;
+
+  // With a quest title we say what was done; without one — the streak card
+  // links here too — we fall back to the app's own line rather than
+  // inviting someone to "take this quest" when there is no quest.
+  var t = new URLSearchParams(location.search).get('t');
+  if (t) {
+    document.getElementById('title').textContent = t;
+    document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
+    document.title = t + ' — SideQuesting';
+  }
+
+  // Try once, quietly, on first paint. Browsers ignore this when no handler
+  // is registered, which is exactly the fallback we want.
+  if (id) {
+    var tried = false;
+    var go = function () { if (!tried) { tried = true; location.href = deep; } };
+    if (document.visibilityState === 'visible') setTimeout(go, 250);
+  }
+</script>
+</body>
+</html>
