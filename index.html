@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q993QCY14D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q993QCY14D');
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SideQuesting — do hard things, every day</title>
@@ -44,6 +53,33 @@
   .btn-primary { background: var(--ink); color: var(--page); }
   .btn-ghost { border: 1px solid var(--border); color: var(--ink); }
   .cta-note { margin-top: 14px; font-size: 13px; }
+
+  /* The Android CTA *is* the form — a direct APK link gets flagged by Play
+     Protect and half the stock browsers, so access goes out as a Play test
+     invite and the address is the only thing we need. */
+  .access { max-width: 520px; margin: 34px auto 0; text-align: left;
+    scroll-margin-top: 24px; }
+  .access-label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 9px; }
+  .access-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .access-row input { flex: 1 1 250px; min-width: 0; padding: 14px 16px;
+    border: 1px solid var(--border); border-radius: 12px; background: var(--page);
+    color: var(--ink); font: inherit; font-size: 16px; /* <16px makes iOS zoom */ }
+  .access-row input::placeholder { color: var(--faint); }
+  .access-row input:focus-visible { outline: 2px solid var(--green); outline-offset: 1px;
+    border-color: var(--green); }
+  button.btn { flex: none; border: 0; cursor: pointer; font: inherit; font-size: 16px;
+    font-weight: 600; }
+  button.btn[disabled] { opacity: 0.55; cursor: default; }
+  .access-note { font-size: 13px; margin-top: 13px; }
+  .access-note a { color: inherit; }
+  .access-status { font-size: 13.5px; font-weight: 600; margin-top: 13px; }
+  .access-status:empty { display: none; }
+  .access-status.ok { color: var(--green); }
+  /* iPhones get TestFlight; the form is one tap away for anyone installing
+     on someone else's Android. :target, not JS, so it still opens if the
+     script never runs. */
+  body.ios .access { display: none; }
+  body.ios .access:target { display: block; }
 
   .phones { display: flex; justify-content: center; align-items: flex-start; gap: 34px;
     padding: 40px 0 16px; overflow: hidden; }
@@ -110,15 +146,27 @@
       <h1>Do hard things.<span class="accent">Every day.</span></h1>
       <p class="muted">Real-world quests proven with live photos. Daily goals that build honest
       streaks. And people who keep you honest — because someone should.</p>
-      <div class="cta-row" id="android-flow">
-        <a class="btn btn-primary" href="https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk">Download for Android</a>
-        <a class="btn btn-ghost" href="https://testflight.apple.com/join/9jrmXcTS">iPhone beta</a>
-      </div>
       <div class="cta-row hide" id="ios-flow">
         <a class="btn btn-primary" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
-        <a class="btn btn-ghost" href="https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk">Android</a>
+        <a class="btn btn-ghost" href="#access">Android</a>
       </div>
-      <div class="cta-note muted" id="cta-note">Free · Android installs directly · iPhone beta via TestFlight</div>
+
+      <form class="access" id="access" novalidate>
+        <div id="access-fields">
+          <label class="access-label" for="access-email">Get Android access — your Google account email</label>
+          <div class="access-row">
+            <input id="access-email" name="email" type="email" required autocomplete="email"
+                   inputmode="email" spellcheck="false" placeholder="you@gmail.com">
+            <button class="btn btn-primary" type="submit">Request access</button>
+          </div>
+        </div>
+        <p class="access-note muted">Android goes out as a Google Play test invite, so it has to
+        be the Google account you use on the Play Store. <a href="https://testflight.apple.com/join/9jrmXcTS">On
+        iPhone? Join the TestFlight beta.</a></p>
+        <p class="access-status" id="access-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="cta-note muted" id="cta-note">Free · Android by Play test invite · iPhone beta via TestFlight</div>
     </section>
 
     <div class="ticker"><div class="ticker-track"><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span></div></div>
@@ -151,7 +199,7 @@
     <section class="last-cta reveal">
       <h2>Your record starts with one quest.</h2>
       <div class="cta-row">
-        <a class="btn btn-primary" id="bottom-cta" href="https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk">Get SideQuesting</a>
+        <a class="btn btn-primary" id="bottom-cta" href="#access">Get SideQuesting</a>
       </div>
     </section>
 
@@ -162,15 +210,73 @@
     </footer>
   </div>
   <script>
+    const TESTFLIGHT = "https://testflight.apple.com/join/9jrmXcTS";
+    // Public by design — the same anon key the app ships with. It can insert a
+    // request and nothing else: the table has an insert-only RLS policy and no
+    // select policy, so the list can't be read back from the browser.
+    const SUPABASE_URL = "https://rvvqwdugquiinqapootg.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2dnF3ZHVncXVpaW5xYXBvb3RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTEzMTMsImV4cCI6MjEwMTY2NzMxM30.HK-hwhinCEFlcn9BdDF5-RxnUqNGihQadPisxQWpi98";
+    const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
     const io = new IntersectionObserver((es) => es.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
     }), { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      document.getElementById("android-flow").classList.add("hide");
+      document.body.classList.add("ios");
       document.getElementById("ios-flow").classList.remove("hide");
-      document.getElementById("bottom-cta").href = "https://testflight.apple.com/join/9jrmXcTS";
+      document.getElementById("bottom-cta").href = TESTFLIGHT;
     }
+
+    const form = document.getElementById("access");
+    const input = document.getElementById("access-email");
+    const fields = document.getElementById("access-fields");
+    const statusEl = document.getElementById("access-status");
+    const submitBtn = form.querySelector("button[type=submit]");
+    const say = (msg, cls) => { statusEl.textContent = msg; statusEl.className = "access-status " + (cls || ""); };
+
+    // Anything pointing at the form focuses it too — :target alone scrolls
+    // there and then asks the person to find the field themselves.
+    document.querySelectorAll('a[href="#access"]').forEach(a => a.addEventListener("click", () => {
+      setTimeout(() => input.focus({ preventScroll: true }), 0);
+    }));
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      if (!EMAIL_RE.test(email)) { say("That doesn't look like an email address.", "err"); input.focus(); return; }
+      submitBtn.disabled = true;
+      say("Sending…", "");
+      try {
+        const res = await fetch(SUPABASE_URL + "/rest/v1/android_access_requests", {
+          method: "POST",
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+            // Not `return=representation`: there's no select policy, so asking
+            // for the row back would fail a request that actually succeeded.
+            "Prefer": "return=minimal",
+          },
+          body: JSON.stringify({ email: email, source: "landing" }),
+        });
+        // 409 is the unique index — this address already asked. Same answer
+        // either way; distinguishing them turns the form into a way to test
+        // whether a given person is on the list.
+        if (res.ok || res.status === 409) {
+          fields.classList.add("hide");
+          say("You're on the list. The Play invite lands in your inbox once you're added.", "ok");
+          if (window.gtag) gtag("event", "android_access_request", { method: "landing" });
+        } else {
+          say("Couldn't send that. Try again in a moment.", "err");
+          submitBtn.disabled = false;
+        }
+      } catch {
+        say("Couldn't send that — check your connection and try again.", "err");
+        submitBtn.disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
