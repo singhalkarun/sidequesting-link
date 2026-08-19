@@ -53,28 +53,45 @@
   .btn-primary { background: var(--ink); color: var(--page); }
   .btn-ghost { border: 1px solid var(--border); color: var(--ink); }
   .cta-note { margin-top: 14px; font-size: 13px; }
+  /* nowrap so the link moves to the next line whole, rather than breaking as
+     "iPhone beta via / TestFlight" on a phone. */
+  .cta-note a { color: inherit; white-space: nowrap; text-decoration: underline;
+    text-underline-offset: 2px; text-decoration-color: var(--border); }
+  .cta-note a:hover { text-decoration-color: currentColor; }
 
   /* The Android CTA *is* the form — a direct APK link gets flagged by Play
      Protect and half the stock browsers, so access goes out as a Play test
-     invite and the address is the only thing we need. */
-  .access { max-width: 520px; margin: 34px auto 0; text-align: left;
-    scroll-margin-top: 24px; }
-  .access-label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 9px; }
-  .access-row { display: flex; gap: 10px; flex-wrap: wrap; }
-  .access-row input { flex: 1 1 250px; min-width: 0; padding: 14px 16px;
-    border: 1px solid var(--border); border-radius: 12px; background: var(--page);
-    color: var(--ink); font: inherit; font-size: 16px; /* <16px makes iOS zoom */ }
+     invite and the address is the only thing we need.
+
+     It has to read as ONE object sitting where the button used to sit, not
+     as a form bolted under the hero: field and button share a single border,
+     the label is for screen readers only, and the one line of explanation
+     lives in .cta-note where it always lived. */
+  .access { max-width: 430px; margin: 34px auto 0; scroll-margin-top: 24px; }
+  .access-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    padding: 5px; border: 1px solid var(--border); border-radius: 14px;
+    transition: border-color 0.2s ease; }
+  .access-row:focus-within { border-color: var(--green); }
+  .access-row input { flex: 1 1 150px; min-width: 0; border: 0; background: none;
+    padding: 10px 12px; color: var(--ink); font: inherit;
+    font-size: 16px; /* <16px makes iOS zoom on focus */ }
+  .access-row input:focus { outline: none; }
   .access-row input::placeholder { color: var(--faint); }
-  .access-row input:focus-visible { outline: 2px solid var(--green); outline-offset: 1px;
-    border-color: var(--green); }
-  button.btn { flex: none; border: 0; cursor: pointer; font: inherit; font-size: 16px;
-    font-weight: 600; }
-  button.btn[disabled] { opacity: 0.55; cursor: default; }
-  .access-note { font-size: 13px; margin-top: 13px; }
-  .access-note a { color: inherit; }
-  .access-status { font-size: 13.5px; font-weight: 600; margin-top: 13px; }
+  button.btn { flex: 1 1 auto; border: 0; cursor: pointer; font: inherit;
+    font-size: 15px; font-weight: 600; padding: 11px 20px; border-radius: 10px; }
+  button.btn[disabled] { opacity: 0.5; cursor: default; }
+  .access-status { font-size: 13.5px; font-weight: 600; margin-top: 14px; text-align: center; }
   .access-status:empty { display: none; }
   .access-status.ok { color: var(--green); }
+  /* Small phones: rather than let the button squeeze the field until the
+     placeholder truncates mid-word, give each a full row inside the same
+     border. Still one object, just stacked. */
+  @media (max-width: 430px) {
+    .access-row input { flex: 1 1 100%; text-align: center; }
+    .access-row button.btn { flex: 1 1 100%; }
+  }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; }
   /* iPhones get TestFlight; the form is one tap away for anyone installing
      on someone else's Android. :target, not JS, so it still opens if the
      script never runs. */
@@ -153,20 +170,18 @@
 
       <form class="access" id="access" novalidate>
         <div id="access-fields">
-          <label class="access-label" for="access-email">Get Android access — your Google account email</label>
+          <label class="vh" for="access-email">The Google account email your Play invite should go to</label>
           <div class="access-row">
             <input id="access-email" name="email" type="email" required autocomplete="email"
-                   inputmode="email" spellcheck="false" placeholder="you@gmail.com">
-            <button class="btn btn-primary" type="submit">Request access</button>
+                   inputmode="email" spellcheck="false" placeholder="Google account email">
+            <button class="btn btn-primary" type="submit">Get access</button>
           </div>
         </div>
-        <p class="access-note muted">Android goes out as a Google Play test invite, so it has to
-        be the Google account you use on the Play Store. <a href="https://testflight.apple.com/join/9jrmXcTS">On
-        iPhone? Join the TestFlight beta.</a></p>
         <p class="access-status" id="access-status" role="status" aria-live="polite"></p>
       </form>
 
-      <div class="cta-note muted" id="cta-note">Free · Android by Play test invite · iPhone beta via TestFlight</div>
+      <div class="cta-note muted" id="cta-note">Free · Android by Google Play invite ·
+      <a href="https://testflight.apple.com/join/9jrmXcTS">iPhone beta via TestFlight</a></div>
     </section>
 
     <div class="ticker"><div class="ticker-track"><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span></div></div>
