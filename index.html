@@ -20,6 +20,21 @@
 <meta property="og:url" content="https://sidequesting.club">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<script>
+  // Deliberately here in <head>, blocking, before a single pixel is painted.
+  // Run at the bottom of <body> — where this used to live — an iPhone paints
+  // the Android form, then hides it, and on a slow connection you watch it
+  // happen. The class goes on <html> because <body> doesn't exist yet.
+  (function () {
+    var ua = navigator.userAgent, el = document.documentElement;
+    // iPadOS 13+ claims to be a Mac; no real Mac has a touchscreen.
+    if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) {
+      el.className += " ios";
+    } else if (/Android/i.test(ua)) {
+      el.className += " android";
+    }
+  })();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
 <style>
   :root {
@@ -97,10 +112,15 @@
      a choice they can only get wrong. Desktop can't be told apart, so it
      keeps both. The form is still reachable at /#access for anyone who
      genuinely wants the other platform — :target, not JS, so that works even
-     if the script never runs. */
-  body.ios .access { display: none; }
-  body.ios .access:target { display: block; }
-  body.ios .not-ios, body.android .not-android { display: none; }
+     if the script never runs.
+
+     Driven by a class on <html> set in <head>, so the right thing is on
+     screen at first paint rather than corrected afterwards. */
+  #ios-flow { display: none; }
+  html.ios #ios-flow { display: flex; }
+  html.ios .access { display: none; }
+  html.ios .access:target { display: block; }
+  html.ios .not-ios, html.android .not-android { display: none; }
 
   .phones { display: flex; justify-content: center; align-items: flex-start; gap: 34px;
     padding: 40px 0 16px; overflow: hidden; }
@@ -167,7 +187,7 @@
       <h1>Do hard things.<span class="accent">Every day.</span></h1>
       <p class="muted">Real-world quests proven with live photos. Daily goals that build honest
       streaks. And people who keep you honest — because someone should.</p>
-      <div class="cta-row hide" id="ios-flow">
+      <div class="cta-row" id="ios-flow">
         <a class="btn btn-primary" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
       </div>
 
@@ -242,17 +262,10 @@
     }), { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach(el => io.observe(el));
 
-    // iPadOS 13+ reports itself as a Mac; maxTouchPoints is what tells them
-    // apart, since no actual Mac has a touchscreen.
-    const ua = navigator.userAgent;
-    const isIOS = /iPhone|iPad|iPod/i.test(ua) ||
-      (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-    if (isIOS) {
-      document.body.classList.add("ios");
-      document.getElementById("ios-flow").classList.remove("hide");
+    // Which platform we're on was decided in <head>; all that's left is the
+    // one thing CSS can't do — point the bottom button at TestFlight.
+    if (document.documentElement.classList.contains("ios")) {
       document.getElementById("bottom-cta").href = TESTFLIGHT;
-    } else if (/Android/i.test(ua)) {
-      document.body.classList.add("android");
     }
 
     const form = document.getElementById("access");
