@@ -92,11 +92,15 @@
   }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip-path: inset(50%); white-space: nowrap; }
-  /* iPhones get TestFlight; the form is one tap away for anyone installing
-     on someone else's Android. :target, not JS, so it still opens if the
-     script never runs. */
+  /* One phone, one path. A person on an iPhone can't use a Play invite and a
+     person on Android can't use TestFlight, so showing them the other one is
+     a choice they can only get wrong. Desktop can't be told apart, so it
+     keeps both. The form is still reachable at /#access for anyone who
+     genuinely wants the other platform — :target, not JS, so that works even
+     if the script never runs. */
   body.ios .access { display: none; }
   body.ios .access:target { display: block; }
+  body.ios .not-ios, body.android .not-android { display: none; }
 
   .phones { display: flex; justify-content: center; align-items: flex-start; gap: 34px;
     padding: 40px 0 16px; overflow: hidden; }
@@ -165,7 +169,6 @@
       streaks. And people who keep you honest — because someone should.</p>
       <div class="cta-row hide" id="ios-flow">
         <a class="btn btn-primary" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
-        <a class="btn btn-ghost" href="#access">Android</a>
       </div>
 
       <form class="access" id="access" novalidate>
@@ -180,8 +183,9 @@
         <p class="access-status" id="access-status" role="status" aria-live="polite"></p>
       </form>
 
-      <div class="cta-note muted" id="cta-note">Free · Android by Google Play invite ·
-      <a href="https://testflight.apple.com/join/9jrmXcTS">iPhone beta via TestFlight</a></div>
+      <div class="cta-note muted" id="cta-note">Free<span
+        class="not-ios"> · Android by Google Play invite</span><span
+        class="not-android"> · <a href="https://testflight.apple.com/join/9jrmXcTS">iPhone beta via TestFlight</a></span></div>
     </section>
 
     <div class="ticker"><div class="ticker-track"><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span></div></div>
@@ -238,10 +242,17 @@
     }), { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach(el => io.observe(el));
 
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // iPadOS 13+ reports itself as a Mac; maxTouchPoints is what tells them
+    // apart, since no actual Mac has a touchscreen.
+    const ua = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/i.test(ua) ||
+      (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    if (isIOS) {
       document.body.classList.add("ios");
       document.getElementById("ios-flow").classList.remove("hide");
       document.getElementById("bottom-cta").href = TESTFLIGHT;
+    } else if (/Android/i.test(ua)) {
+      document.body.classList.add("android");
     }
 
     const form = document.getElementById("access");
