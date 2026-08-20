@@ -9,5 +9,6 @@
   "requiredNativeModules": [
     "RNSentry",
     "ExpoApplication"
-  ]
+  ],
+  "playUrl": "https://play.google.com/store/apps/details?id=club.sidequesting.app"
 }

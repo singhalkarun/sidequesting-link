@@ -187,24 +187,13 @@
       <h1>Do hard things.<span class="accent">Every day.</span></h1>
       <p class="muted">Real-world quests proven with live photos. Daily goals that build honest
       streaks. And people who keep you honest — because someone should.</p>
-      <div class="cta-row" id="ios-flow">
-        <a class="btn btn-primary" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
+      <div class="cta-row">
+        <a class="btn btn-primary not-android" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
+        <a class="btn btn-primary not-ios" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Google Play</a>
       </div>
 
-      <form class="access" id="access" novalidate>
-        <div id="access-fields">
-          <label class="vh" for="access-email">The Google account email your Play invite should go to</label>
-          <div class="access-row">
-            <input id="access-email" name="email" type="email" required autocomplete="email"
-                   inputmode="email" spellcheck="false" placeholder="Google account email">
-            <button class="btn btn-primary" type="submit">Get access</button>
-          </div>
-        </div>
-        <p class="access-status" id="access-status" role="status" aria-live="polite"></p>
-      </form>
-
       <div class="cta-note muted" id="cta-note">Free<span
-        class="not-ios"> · Android by Google Play invite</span><span
+        class="not-ios"> · Android on Google Play</span><span
         class="not-android"> · <a href="https://testflight.apple.com/join/9jrmXcTS">iPhone beta via TestFlight</a></span></div>
     </section>
 
@@ -238,7 +227,8 @@
     <section class="last-cta reveal">
       <h2>Your record starts with one quest.</h2>
       <div class="cta-row">
-        <a class="btn btn-primary" id="bottom-cta" href="#access">Get SideQuesting</a>
+        <a class="btn btn-primary not-android" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
+        <a class="btn btn-primary not-ios" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Google Play</a>
       </div>
     </section>
 
@@ -249,73 +239,10 @@
     </footer>
   </div>
   <script>
-    const TESTFLIGHT = "https://testflight.apple.com/join/9jrmXcTS";
-    // Public by design — the same anon key the app ships with. It can insert a
-    // request and nothing else: the table has an insert-only RLS policy and no
-    // select policy, so the list can't be read back from the browser.
-    const SUPABASE_URL = "https://rvvqwdugquiinqapootg.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2dnF3ZHVncXVpaW5xYXBvb3RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTEzMTMsImV4cCI6MjEwMTY2NzMxM30.HK-hwhinCEFlcn9BdDF5-RxnUqNGihQadPisxQWpi98";
-    const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-
     const io = new IntersectionObserver((es) => es.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
     }), { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach(el => io.observe(el));
-
-    // Which platform we're on was decided in <head>; all that's left is the
-    // one thing CSS can't do — point the bottom button at TestFlight.
-    if (document.documentElement.classList.contains("ios")) {
-      document.getElementById("bottom-cta").href = TESTFLIGHT;
-    }
-
-    const form = document.getElementById("access");
-    const input = document.getElementById("access-email");
-    const fields = document.getElementById("access-fields");
-    const statusEl = document.getElementById("access-status");
-    const submitBtn = form.querySelector("button[type=submit]");
-    const say = (msg, cls) => { statusEl.textContent = msg; statusEl.className = "access-status " + (cls || ""); };
-
-    // Anything pointing at the form focuses it too — :target alone scrolls
-    // there and then asks the person to find the field themselves.
-    document.querySelectorAll('a[href="#access"]').forEach(a => a.addEventListener("click", () => {
-      setTimeout(() => input.focus({ preventScroll: true }), 0);
-    }));
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = input.value.trim();
-      if (!EMAIL_RE.test(email)) { say("That doesn't look like an email address.", "err"); input.focus(); return; }
-      submitBtn.disabled = true;
-      say("Sending…", "");
-      try {
-        const res = await fetch(SUPABASE_URL + "/rest/v1/android_access_requests", {
-          method: "POST",
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-            "Content-Type": "application/json",
-            // Not `return=representation`: there's no select policy, so asking
-            // for the row back would fail a request that actually succeeded.
-            "Prefer": "return=minimal",
-          },
-          body: JSON.stringify({ email: email, source: "landing" }),
-        });
-        // 409 is the unique index — this address already asked. Same answer
-        // either way; distinguishing them turns the form into a way to test
-        // whether a given person is on the list.
-        if (res.ok || res.status === 409) {
-          fields.classList.add("hide");
-          say("You're on the list. The Play invite lands in your inbox once you're added.", "ok");
-          if (window.gtag) gtag("event", "android_access_request", { method: "landing" });
-        } else {
-          say("Couldn't send that. Try again in a moment.", "err");
-          submitBtn.disabled = false;
-        }
-      } catch {
-        say("Couldn't send that — check your connection and try again.", "err");
-        submitBtn.disabled = false;
-      }
-    });
   </script>
 </body>
 </html>
