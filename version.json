@@ -1,9 +1,9 @@
 {
-  "versionCode": 161,
+  "versionCode": 162,
   "forceBelow": 161,
   "updates": {
-    "ios": "01a01f00-f607-7250-b47a-008bc39983a9",
-    "android": "01a01f01-8010-7e2c-9c27-4cb40f07e55c"
+    "ios": "01a03820-4bbb-7f8a-847d-844c2db4b2f5",
+    "android": "01a03820-e40d-73a6-948a-e8bd9abf9360"
   },
   "apkUrl": "https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk",
   "requiredNativeModules": [
