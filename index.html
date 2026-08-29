@@ -12,22 +12,18 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SideQuesting — do hard things, every day</title>
-<meta name="description" content="Real-world quests proven with live photos. Daily goals that build honest streaks. A feed of things people actually did.">
-<meta property="og:title" content="SideQuesting — do hard things, every day">
-<meta property="og:description" content="Real-world quests with live-photo proof. Honest streaks. A feed of things people actually did.">
+<title>SideQuesting — the effort goes into the habit, not the app</title>
+<meta name="description" content="A few goals. One tick a day. No setup, no dashboards, no system to maintain. SideQuesting keeps the record; the effort is yours.">
+<meta property="og:title" content="SideQuesting">
+<meta property="og:description" content="Put the effort into the habit. Not into the app.">
 <meta property="og:image" content="https://sidequesting.club/og.jpg">
 <meta property="og:url" content="https://sidequesting.club">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <script>
-  // Deliberately here in <head>, blocking, before a single pixel is painted.
-  // Run at the bottom of <body> — where this used to live — an iPhone paints
-  // the Android form, then hides it, and on a slow connection you watch it
-  // happen. The class goes on <html> because <body> doesn't exist yet.
+  // Platform decided in <head>, before first paint, so one phone sees one button.
   (function () {
     var ua = navigator.userAgent, el = document.documentElement;
-    // iPadOS 13+ claims to be a Mac; no real Mac has a touchscreen.
     if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) {
       el.className += " ios";
     } else if (/Android/i.test(ua)) {
@@ -37,212 +33,187 @@
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
 <style>
+  /* Tokens are src/lib/theme.ts verbatim. The page is one screen: a claim,
+     the app, a button. Nothing is explained — the app is the explanation. */
   :root {
     color-scheme: light dark;
-    --page:#FFFFFF; --ink:#17181A; --muted:#85888C; --faint:#A9ACB0;
-    --border:#E9EAEB; --hairline:#F1F2F3; --green:#1C7A57; --badge:#F1F2F3;
+    --page:#FFFFFF; --card:#FFFFFF; --ink:#17181A; --muted:#85888C; --faint:#A9ACB0;
+    --border:#E9EAEB; --hairline:#F1F2F3; --green:#1C7A57;
+    --line-strong:#C9CBCE; --dash:#D7D8DA; --frame:#E1E2E4;
+    --shadow: 0 30px 70px rgba(15,17,19,0.14);
   }
   @media (prefers-color-scheme: dark) {
-    :root { --page:#0E0F11; --ink:#ECEDEF; --muted:#8B8E93; --faint:#6A6D72;
-      --border:#242629; --hairline:#1E2023; --green:#3BAE82; --badge:#1F2124; }
+    :root { --page:#0E0F11; --card:#131416; --ink:#ECEDEF; --muted:#8B8E93; --faint:#6A6D72;
+      --border:#242629; --hairline:#1E2023; --green:#3BAE82;
+      --line-strong:#4A4D52; --dash:#3A3C40; --frame:#26282B;
+      --shadow: 0 30px 70px rgba(0,0,0,0.5); }
   }
   * { box-sizing: border-box; margin: 0; }
-  body { font: 16px/1.65 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  html { -webkit-text-size-adjust: 100%; }
+  body { min-height: 100svh; display: flex; flex-direction: column;
+    font: 17px/1.6 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
     background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+  /* Full width. The gutters grow with the window; nothing is boxed into a column. */
+  .wrap { flex: 1; display: flex; flex-direction: column; width: 100%;
+    padding: 0 clamp(22px, 6vw, 140px); }
   .muted { color: var(--muted); }
   .accent { color: var(--green); }
-
-  header { padding: 26px 0; display: flex; align-items: center; gap: 10px; }
-  .brand { font-size: 19px; font-weight: 800; letter-spacing: -0.03em; }
-  .mark { flex: none; }
-
-  .hero { padding: 64px 0 40px; text-align: center; }
-  .hero h1 { font-size: clamp(42px, 8vw, 72px); font-weight: 800; letter-spacing: -0.04em;
-    line-height: 1.03; text-wrap: balance; }
-  .hero h1 .accent { display: block; }
-  .hero p { font-size: 19px; max-width: 34em; margin: 22px auto 0; }
-  .cta-row { margin-top: 34px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn { display: inline-block; padding: 15px 28px; border-radius: 12px;
-    font-size: 16px; font-weight: 600; text-decoration: none; letter-spacing: -0.01em; }
-  .btn-primary { background: var(--ink); color: var(--page); }
-  .btn-ghost { border: 1px solid var(--border); color: var(--ink); }
-  .cta-note { margin-top: 14px; font-size: 13px; }
-  /* nowrap so the link moves to the next line whole, rather than breaking as
-     "iPhone beta via / TestFlight" on a phone. */
-  .cta-note a { color: inherit; white-space: nowrap; text-decoration: underline;
-    text-underline-offset: 2px; text-decoration-color: var(--border); }
-  .cta-note a:hover { text-decoration-color: currentColor; }
-
-  /* The Android CTA *is* the form — a direct APK link gets flagged by Play
-     Protect and half the stock browsers, so access goes out as a Play test
-     invite and the address is the only thing we need.
-
-     It has to read as ONE object sitting where the button used to sit, not
-     as a form bolted under the hero: field and button share a single border,
-     the label is for screen readers only, and the one line of explanation
-     lives in .cta-note where it always lived. */
-  .access { max-width: 430px; margin: 34px auto 0; scroll-margin-top: 24px; }
-  .access-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-    padding: 5px; border: 1px solid var(--border); border-radius: 14px;
-    transition: border-color 0.2s ease; }
-  .access-row:focus-within { border-color: var(--green); }
-  .access-row input { flex: 1 1 150px; min-width: 0; border: 0; background: none;
-    padding: 10px 12px; color: var(--ink); font: inherit;
-    font-size: 16px; /* <16px makes iOS zoom on focus */ }
-  .access-row input:focus { outline: none; }
-  .access-row input::placeholder { color: var(--faint); }
-  button.btn { flex: 1 1 auto; border: 0; cursor: pointer; font: inherit;
-    font-size: 15px; font-weight: 600; padding: 11px 20px; border-radius: 10px; }
-  button.btn[disabled] { opacity: 0.5; cursor: default; }
-  .access-status { font-size: 13.5px; font-weight: 600; margin-top: 14px; text-align: center; }
-  .access-status:empty { display: none; }
-  .access-status.ok { color: var(--green); }
-  /* Small phones: rather than let the button squeeze the field until the
-     placeholder truncates mid-word, give each a full row inside the same
-     border. Still one object, just stacked. */
-  @media (max-width: 430px) {
-    .access-row input { flex: 1 1 100%; text-align: center; }
-    .access-row button.btn { flex: 1 1 100%; }
-  }
-  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden;
-    clip-path: inset(50%); white-space: nowrap; }
-  /* One phone, one path. A person on an iPhone can't use a Play invite and a
-     person on Android can't use TestFlight, so showing them the other one is
-     a choice they can only get wrong. Desktop can't be told apart, so it
-     keeps both. The form is still reachable at /#access for anyone who
-     genuinely wants the other platform — :target, not JS, so that works even
-     if the script never runs.
-
-     Driven by a class on <html> set in <head>, so the right thing is on
-     screen at first paint rather than corrected afterwards. */
-  #ios-flow { display: none; }
-  html.ios #ios-flow { display: flex; }
-  html.ios .access { display: none; }
-  html.ios .access:target { display: block; }
+  ::selection { background: var(--green); color: #fff; }
   html.ios .not-ios, html.android .not-android { display: none; }
 
-  .phones { display: flex; justify-content: center; align-items: flex-start; gap: 34px;
-    padding: 40px 0 16px; overflow: hidden; }
-  .ph { width: min(300px, 70vw); aspect-ratio: 3 / 5.6; overflow: hidden;
-    border-radius: 28px; border: 1px solid var(--border);
-    box-shadow: 0 30px 70px rgba(15,17,19,0.18); background: #fff; }
-  .ph img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-  .ph:first-child { transform: rotate(-2.5deg); }
-  .ph:last-child { margin-top: 52px; transform: rotate(2.5deg); }
-  @media (max-width: 640px) { .ph:last-child { display: none; }
-    .ph:first-child { transform: none; } }
+  header { padding: clamp(24px, 3vw, 40px) 0; display: flex; align-items: center; gap: 10px; }
+  .brand { font-size: clamp(19px, 1.4vw, 24px); font-weight: 700; letter-spacing: -0.03em; }
+  header svg { width: clamp(22px, 1.6vw, 28px); height: auto; }
 
-  .ticker { overflow: hidden; border-top: 1px solid var(--hairline);
-    border-bottom: 1px solid var(--hairline); margin-top: 44px; padding: 13px 0;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
-  .ticker-track { display: flex; gap: 34px; width: max-content;
-    animation: tick 36s linear infinite; }
-  .ticker span { font-size: 13.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
-  .ticker b { color: var(--green); font-weight: 700; }
-  @keyframes tick { to { transform: translateX(-50%); } }
+  main { flex: 1; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 120px); align-items: center; padding: 0 0 3vh; }
+  h1 { font-size: clamp(42px, 6.6vw, 112px); font-weight: 750; letter-spacing: -0.045em;
+    line-height: 1.0; text-wrap: balance; }
+  h1 .accent { display: block; }
+  .lede { font-size: clamp(18px, 1.5vw, 26px); max-width: 26em; margin-top: clamp(22px, 2.2vw, 36px); }
+  .cta-row { margin-top: clamp(30px, 3vw, 48px); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-block; padding: clamp(15px, 1.2vw, 20px) clamp(26px, 2.2vw, 36px); border-radius: 12px;
+    font-size: clamp(16px, 1.15vw, 19px); font-weight: 600; text-decoration: none; letter-spacing: -0.01em;
+    background: var(--ink); color: var(--page); }
 
-  .reveal { opacity: 0; transform: translateY(18px);
-    transition: opacity 0.7s ease, transform 0.7s ease; }
-  .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) {
-    .ticker-track { animation: none; }
-    .reveal { opacity: 1; transform: none; transition: none; }
+  /* The phone, drawn from design/reference.html §2 — the simplest state the app
+     has: a streak, three goals, a place to add one. */
+  .stage { display: flex; justify-content: center; }
+  /* The phone is scaled to the window HEIGHT (--s, set by the script at the
+     bottom) so the whole page — header, hero, footer — fits one desktop
+     viewport with no scroll. Bigger monitors get a bigger phone, not a scrollbar. */
+  .ph { zoom: var(--s, 1); }
+  .ph { width: 300px; flex: none; background: var(--page); border: 1px solid var(--frame);
+    border-radius: 34px; padding: 16px 16px 12px; box-shadow: var(--shadow);
+    height: 640px; display: flex; flex-direction: column; overflow: hidden;
+    font-size: 15px; line-height: 1.35; text-align: left; }
+  .sb { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600;
+    color: var(--faint); padding: 0 6px 10px; }
+  .sc-title { font-size: 22px; font-weight: 750; letter-spacing: -0.04em; margin: 2px 2px 12px; }
+  .sk { font-size: 11px; font-weight: 700; letter-spacing: 1.1px; color: var(--muted); margin: 14px 2px 7px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 13px 14px; margin-bottom: 8px; }
+  .streak { display: flex; align-items: center; justify-content: space-between; }
+  .streak .n { font-size: 28px; font-weight: 750; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+  .streak small { display: block; font-size: 13px; color: var(--muted); font-weight: 500; }
+  .chev { width: 15px; height: 15px; stroke: var(--faint); stroke-width: 1.7; fill: none;
+    stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .goalrow { display: flex; align-items: center; gap: 11px; padding: 10px 2px; border-bottom: 1px solid var(--hairline); }
+  .goalrow:last-child { border-bottom: 0; }
+  .box { width: 20px; height: 20px; border: 1.6px solid var(--line-strong); border-radius: 7px; flex: none; position: relative; }
+  .box.on { background: var(--green); border-color: var(--green); }
+  .box.on::after { content: ""; position: absolute; left: 6px; top: 2.5px; width: 5px; height: 9px;
+    border: solid #fff; border-width: 0 1.8px 1.8px 0; transform: rotate(45deg); }
+  .goalname { font-weight: 600; font-size: 15px; flex: 1; }
+  .goalname.done { color: var(--faint); }
+  .goalname.done .nm { text-decoration: line-through; }
+  .sub { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 1px; }
+  .sub.faint { color: var(--faint); }
+  .sub.live { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ric { width: 22px; height: 22px; stroke: var(--ink); stroke-width: 1.7; fill: none;
+    stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .dashed { border: 1.5px dashed var(--dash); border-radius: 14px; padding: 10px; text-align: center;
+    color: var(--muted); font-weight: 600; font-size: 15px; margin-top: 8px; }
+  .tabs { display: flex; border-top: 1px solid var(--hairline); margin: auto -16px 0; padding: 9px 6px 0; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 11px; font-weight: 600; color: var(--faint); }
+  .tab svg { width: 19px; height: 19px; stroke: var(--faint); stroke-width: 1.7; fill: none;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .tab.on { color: var(--ink); }
+  .tab.on svg { stroke: var(--ink); stroke-width: 2; }
+
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; gap: 40px; text-align: center; padding-top: 24px; }
+    .lede { margin-left: auto; margin-right: auto; }
+    .cta-row { justify-content: center; }
+    .ph { width: min(300px, 84vw); }
+    footer { flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+    .legal-links a { margin: 0 7px; }
   }
-  .card { transition: border-color 0.2s ease, transform 0.2s ease; }
-  .card:hover { border-color: var(--faint); transform: translateY(-2px); }
-  ::selection { background: var(--green); color: #fff; }
 
-  .thesis { text-align: center; padding: 56px 0 8px; }
-  .thesis p { font-size: clamp(20px, 3.4vw, 27px); font-weight: 700; letter-spacing: -0.02em;
-    max-width: 26em; margin: 0 auto; text-wrap: balance; }
-
-  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px; padding: 52px 0 8px; }
-  .card { border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
-  .card .n { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--green); }
-  .card h3 { font-size: 17.5px; font-weight: 700; letter-spacing: -0.02em; margin-top: 8px; }
-  .card p { font-size: 14.5px; margin-top: 8px; }
-
-  .last-cta { text-align: center; padding: 64px 0 72px; }
-  .last-cta h2 { font-size: clamp(26px, 5vw, 38px); font-weight: 800; letter-spacing: -0.03em; }
-
-  footer { border-top: 1px solid var(--border); padding: 26px 0 48px;
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13px; }
+  footer { border-top: 1px solid var(--border); padding: 24px 0 clamp(32px, 3vw, 48px);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: clamp(15px, 1.15vw, 18px); }
   footer a { color: inherit; text-decoration: none; }
   footer a:hover { text-decoration: underline; }
   .legal-links a { margin-left: 14px; }
-  .hide { display: none; }
   .byline { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <svg class="mark" width="22" height="22" viewBox="0 0 96 96"><line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><polygon points="34,18 78,28 34,45" fill="currentColor"/></svg>
-      <div class="brand">SideQuesting</div>
-    </header>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2 4 2 4H5"/></symbol>
+  <symbol id="i-feed" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16"/></symbol>
+  <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-add-c" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-pause-c" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+</svg>
 
-    <section class="hero">
+<div class="wrap">
+  <header>
+    <svg width="22" height="22" viewBox="0 0 96 96"><line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><polygon points="34,18 78,28 34,45" fill="currentColor"/></svg>
+    <div class="brand">SideQuesting</div>
+  </header>
+
+  <main>
+    <div class="words">
       <h1>Do hard things.<span class="accent">Every day.</span></h1>
-      <p class="muted">Real-world quests proven with live photos. Daily goals that build honest
-      streaks. And people who keep you honest — because someone should.</p>
+      <p class="lede muted">Put the effort into the habit, not the app.</p>
       <div class="cta-row">
-        <a class="btn btn-primary not-android" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
-        <a class="btn btn-primary not-ios" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Google Play</a>
+        <a class="btn not-android" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
+        <a class="btn not-ios" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Google Play</a>
       </div>
+    </div>
 
-      <div class="cta-note muted" id="cta-note">Free<span
-        class="not-ios"> · Android on Google Play</span><span
-        class="not-android"> · <a href="https://testflight.apple.com/join/9jrmXcTS">iPhone beta via TestFlight</a></span></div>
-    </section>
-
-    <div class="ticker"><div class="ticker-track"><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span><span>Talk to a stranger <b>+30</b></span><span>Watch the sunrise <b>+25</b></span><span>Cold shower, 5 days straight <b>+50</b></span><span>Cook a meal from scratch <b>+30</b></span><span>Digital sunset <b>+20</b></span><span>Run 5 km together <b>+40</b></span><span>Read 20 pages · day 12 <b>✓</b></span><span>Morning walk pact <b>+35</b></span></div></div>
-
-    <section class="phones reveal">
-      <div class="ph"><img src="app-today.png" alt="Daily goals with an honest streak" loading="lazy"></div>
-      <div class="ph"><img src="app-feed.png" alt="A feed of completed quests with live-photo proof" loading="lazy"></div>
-    </section>
-
-    <section class="thesis reveal">
-      <p>No opinions. No reposts. Every post is something someone
-      <span class="accent">actually did.</span></p>
-    </section>
-
-    <section class="features reveal">
-      <div class="card"><div class="n">01</div><h3>Take on a quest</h3>
-        <p class="muted">Talk to a stranger. Watch the sunrise. Cook a meal from scratch.
-        Real life, not a checklist. <span class="accent">Points follow proof.</span></p></div>
-      <div class="card"><div class="n">02</div><h3>Prove it live</h3>
-        <p class="muted">Photo quests open the camera — no gallery uploads, no fakes.
-        Honor quests take your word. Partner quests get a witness who verifies you.</p></div>
-      <div class="card"><div class="n">03</div><h3>Keep the streak</h3>
-        <p class="muted">Pick private daily goals. A day counts only when every one is
-        done — one perfect day at a time is what keeps a streak honest.</p></div>
-      <div class="card"><div class="n">04</div><h3>Build the record</h3>
-        <p class="muted">Every post in the feed is a completed quest. Cheer people on,
-        take on what they finished, climb the weekly leaderboard.</p></div>
-    </section>
-
-    <section class="last-cta reveal">
-      <h2>Your record starts with one quest.</h2>
-      <div class="cta-row">
-        <a class="btn btn-primary not-android" href="https://testflight.apple.com/join/9jrmXcTS">Join the iPhone beta</a>
-        <a class="btn btn-primary not-ios" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Google Play</a>
+    <div class="stage">
+      <div class="ph">
+        <div class="sb"><span>18:06</span><span>●●●</span></div>
+        <div class="sc-title">Today</div>
+        <div class="card streak"><div><span class="n">14</span><small>Day streak · Every goal, every day</small></div><svg class="chev"><use href="#i-chev"/></svg></div>
+        <div class="sk">DAILY GOALS</div>
+        <div class="card" style="padding:3px 14px;">
+          <div class="goalrow"><div class="box on"></div><div class="goalname done"><span class="nm">Read 20 pages</span><div class="sub faint">20 of 20</div></div></div>
+          <div class="goalrow"><div class="box"></div><div class="goalname">5 glasses of water<div class="sub">2 of 5</div></div><svg class="ric"><use href="#i-add-c"/></svg></div>
+          <div class="goalrow"><div class="box"></div><div class="goalname">Stretch 30 minutes<div class="sub live">17:42 of 30 · tap to pause</div></div><svg class="ric"><use href="#i-pause-c"/></svg></div>
+          <div class="goalrow"><div class="box"></div><div class="goalname">Gym<div class="sub">1 of 3 this week</div></div></div>
+          <div class="goalrow"><div class="box"></div><div class="goalname">No phone after 10 pm</div></div>
+        </div>
+        <div class="dashed">＋ Add a goal</div>
+        <div class="tabs">
+          <div class="tab on"><svg><use href="#i-sun"/></svg>Today</div>
+          <div class="tab"><svg><use href="#i-flag"/></svg>Quests</div>
+          <div class="tab"><svg><use href="#i-feed"/></svg>Feed</div>
+          <div class="tab"><svg><use href="#i-person"/></svg>Profile</div>
+        </div>
       </div>
-    </section>
+    </div>
+  </main>
 
-    <footer class="muted">
-      <span>© 2026 Ambition Forge Private Limited</span>
-      <span>Made with <span class="accent">&hearts;</span> by <a href="https://instagram.com/singhalkarun" class="byline">Karun</a> in Bengaluru</span>
-      <span class="legal-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/delete-account.html">Delete account</a></span>
-    </footer>
-  </div>
-  <script>
-    const io = new IntersectionObserver((es) => es.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-    }), { threshold: 0.12 });
-    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
-  </script>
+  <footer class="muted">
+    <span>© 2026 Ambition Forge Private Limited</span>
+    <span>Made with <span class="accent">&hearts;</span> by <a href="https://instagram.com/singhalkarun" class="byline">Karun</a> in Bengaluru</span>
+    <span class="legal-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/delete-account.html">Delete account</a></span>
+  </footer>
+</div>
+<script>
+  // Desktop only (the phone stacks under the words below 860px and may scroll).
+  // Fit: viewport minus header, footer and breathing room, divided by the
+  // phone's natural height. Clamped so a short window never shrinks it to a
+  // thumbnail and a huge one never blows it up past the type beside it.
+  (function () {
+    var root = document.documentElement;
+    function fit() {
+      if (window.innerWidth < 861) { root.style.removeProperty("--s"); return; }
+      var hdr = document.querySelector("header").offsetHeight;
+      var ftr = document.querySelector("footer").offsetHeight;
+      var room = window.innerHeight - hdr - ftr - 72;
+      var s = Math.max(0.8, Math.min(1.5, room / 660));
+      root.style.setProperty("--s", s.toFixed(3));
+    }
+    fit();
+    window.addEventListener("resize", fit);
+  })();
+</script>
 </body>
 </html>
