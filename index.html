@@ -20,17 +20,6 @@
 <meta property="og:url" content="https://sidequesting.club">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<script>
-  // Platform decided in <head>, before first paint, so one phone sees one button.
-  (function () {
-    var ua = navigator.userAgent, el = document.documentElement;
-    if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) {
-      el.className += " ios";
-    } else if (/Android/i.test(ua)) {
-      el.className += " android";
-    }
-  })();
-</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
 <style>
   /* Tokens are src/lib/theme.ts verbatim. The page is one screen: a claim,
@@ -59,7 +48,6 @@
   .muted { color: var(--muted); }
   .accent { color: var(--green); }
   ::selection { background: var(--green); color: #fff; }
-  html.ios .not-ios, html.android .not-android { display: none; }
 
   header { padding: clamp(24px, 3vw, 40px) 0; display: flex; align-items: center; gap: 10px; }
   .brand { font-size: clamp(19px, 1.4vw, 24px); font-weight: 700; letter-spacing: -0.03em; }
@@ -71,10 +59,25 @@
     line-height: 1.0; text-wrap: balance; }
   h1 .accent { display: block; }
   .lede { font-size: clamp(18px, 1.5vw, 26px); max-width: 26em; margin-top: clamp(22px, 2.2vw, 36px); }
-  .cta-row { margin-top: clamp(30px, 3vw, 48px); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-  .btn { display: inline-block; padding: clamp(15px, 1.2vw, 20px) clamp(26px, 2.2vw, 36px); border-radius: 12px;
-    font-size: clamp(16px, 1.15vw, 19px); font-weight: 600; text-decoration: none; letter-spacing: -0.01em;
-    background: var(--ink); color: var(--page); }
+  .cta-row { --badge-h: clamp(52px, 4vw, 64px); margin-top: clamp(30px, 3vw, 48px);
+    display: flex; gap: clamp(12px, 1.1vw, 18px); flex-wrap: wrap; align-items: center; }
+  /* Official store badges, dark in both themes. Apple also ships a white
+     badge, but the black one carries a #a6a6a6 border and white type, so it
+     holds its own on the dark ground — and it matches Google, whose only
+     public badge is dark. Two dark badges beat one dark and one inverted. */
+  .badge { display: inline-flex; border-radius: 9px; text-decoration: none;
+    transition: transform .16s ease, opacity .16s ease; }
+  .badge:hover { transform: translateY(-2px); }
+  .badge:active { transform: translateY(0); opacity: .9; }
+  .badge:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+  .badge img { display: block; width: auto; }
+  .b-apple { height: var(--badge-h); }
+  /* Google's 646x250 canvas carries 16.8% transparent padding top and bottom
+     and ~6.7% each side (measured off the alpha channel); Apple's SVG carries
+     none. Scale past that padding so the two badges are optically the same
+     height, then pull the dead sides back in so the gap looks even. */
+  .b-google { height: calc(var(--badge-h) * 250 / 166);
+    margin-inline: calc(var(--badge-h) * -0.26); }
 
   /* The phone, drawn from design/reference.html §2 — the simplest state the app
      has: a streak, three goals, a place to add one. */
@@ -161,8 +164,12 @@
       <h1>Do hard things.<span class="accent">Every day.</span></h1>
       <p class="lede muted">Put the effort into the habit, not the app.</p>
       <div class="cta-row">
-        <a class="btn not-android" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">Download on the App Store</a>
-        <a class="btn not-ios" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Google Play</a>
+        <a class="badge" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">
+          <img class="b-apple" src="badges/apple-black.svg" alt="Download on the App Store" width="120" height="40">
+        </a>
+        <a class="badge" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">
+          <img class="b-google" src="badges/google-play.png" alt="Get it on Google Play" width="646" height="250">
+        </a>
       </div>
     </div>
 
