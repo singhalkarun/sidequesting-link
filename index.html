@@ -20,6 +20,17 @@
 <meta property="og:url" content="https://sidequesting.club">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<script>
+  // Platform decided in <head>, before first paint, so one phone sees one badge.
+  (function () {
+    var ua = navigator.userAgent, el = document.documentElement;
+    if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) {
+      el.className += " ios";
+    } else if (/Android/i.test(ua)) {
+      el.className += " android";
+    }
+  })();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
 <style>
   /* Tokens are src/lib/theme.ts verbatim. The page is one screen: a claim,
@@ -47,6 +58,7 @@
     padding: 0 clamp(22px, 6vw, 140px); }
   .muted { color: var(--muted); }
   .accent { color: var(--green); }
+  html.ios .not-ios, html.android .not-android { display: none; }
   ::selection { background: var(--green); color: #fff; }
 
   header { padding: clamp(24px, 3vw, 40px) 0; display: flex; align-items: center; gap: 10px; }
@@ -64,7 +76,8 @@
   /* Official store badges, dark in both themes. Apple also ships a white
      badge, but the black one carries a #a6a6a6 border and white type, so it
      holds its own on the dark ground — and it matches Google, whose only
-     public badge is dark. Two dark badges beat one dark and one inverted. */
+     public badge is dark. Two dark badges beat one dark and one inverted.
+     A phone sees only its own store; desktop sees both. */
   .badge { display: inline-flex; border-radius: 9px; text-decoration: none;
     transition: transform .16s ease, opacity .16s ease; }
   .badge:hover { transform: translateY(-2px); }
@@ -164,10 +177,10 @@
       <h1>Do hard things.<span class="accent">Every day.</span></h1>
       <p class="lede muted">Put the effort into the habit, not the app.</p>
       <div class="cta-row">
-        <a class="badge" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">
+        <a class="badge not-android" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">
           <img class="b-apple" src="badges/apple-black.svg" alt="Download on the App Store" width="120" height="40">
         </a>
-        <a class="badge" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">
+        <a class="badge not-ios" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">
           <img class="b-google" src="badges/google-play.png" alt="Get it on Google Play" width="646" height="250">
         </a>
       </div>
