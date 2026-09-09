@@ -1,5 +1,5 @@
 {
-  "versionCode": 209,
+  "versionCode": 216,
   "forceBelow": 180,
   "updates": {
     "ios": "01a084ed-28ef-7e74-8b7c-9a2c5ec6edb9",
@@ -11,5 +11,6 @@
     "ExpoApplication"
   ],
   "playUrl": "https://play.google.com/store/apps/details?id=club.sidequesting.app",
-  "appStoreUrl": "https://apps.apple.com/us/app/sidequesting-club/id6801703458"
+  "appStoreUrl": "https://apps.apple.com/us/app/sidequesting-club/id6801703458",
+  "latestRuntime": "exposdk:57.0.0"
 }
