@@ -12,6 +12,14 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- A crawler that lands here gets a 404 status and will not draw a preview
+     card no matter what these say — real pages under /c/<slug>/ are what fix
+     that (build-challenge-pages.mjs). These are the floor for the case a slug
+     was never built: a generic card beats a bare URL. -->
+<meta property="og:title" content="SideQuesting">
+<meta property="og:description" content="Small quests, done daily. Free walking challenges with real prizes.">
+<meta property="og:image" content="https://sidequesting.club/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <title>SideQuesting</title>
 <script>
   // GitHub Pages serves only real files, so sidequesting.club/q/<slug> and

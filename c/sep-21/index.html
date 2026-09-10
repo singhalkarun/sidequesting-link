@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q993QCY14D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q993QCY14D');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beat your average — SideQuesting</title>
+<!-- These four lines ARE the WhatsApp preview card, which is the only image the
+     invite ever carries. Static, because a forwarded link is unfurled by
+     WhatsApp's crawler and it does not run the script below. -->
+<meta name="description" content="Walk more than your usual day, 21–27 September. Free to enter, one winner takes ₹2,000.">
+<meta property="og:title" content="Beat your average — free walking challenge">
+<meta property="og:description" content="Walk more than your usual day, 21–27 September. Free to enter, one winner takes ₹2,000.">
+<meta property="og:image" content="https://sidequesting.club/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://sidequesting.club/c/sep-21/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://sidequesting.club/c/sep-21/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: light dark;
+    --page:#FFFFFF; --ink:#17181A; --muted:#85888C; --border:#E9EAEB; --green:#1C7A57; }
+  @media (prefers-color-scheme: dark) {
+    :root { --page:#0E0F11; --ink:#ECEDEF; --muted:#8B8E93; --border:#242629; --green:#3BAE82; } }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 16px/1.6 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased;
+    min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+  .card { width: 100%; max-width: 420px; text-align: center; }
+  .mark { margin-bottom: 22px; }
+  h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+  .sub { color: var(--muted); font-size: 15px; margin-top: 10px; }
+  .prize { font-size: 42px; font-weight: 800; letter-spacing: -0.045em; margin-top: 24px; }
+  .prizesub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .facts { margin-top: 24px; text-align: left; }
+  .facts .row { display: flex; justify-content: space-between; padding: 11px 0;
+    border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); }
+  .facts .row:last-child { border-bottom: 1px solid var(--border); }
+  .facts .row b { color: var(--ink); font-weight: 600; }
+  .btns { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; }
+  .btn { display: block; padding: 14px 20px; border-radius: 12px; text-decoration: none;
+    font-size: 15px; font-weight: 700; }
+  .primary { background: var(--ink); color: var(--page); }
+  .ghost { border: 1px solid var(--border); color: var(--ink); }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
+  /* One badge per device, same rule the home page keeps. */
+  .not-ios, .not-android { display: block; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <svg class="mark" width="30" height="30" viewBox="0 0 96 96" aria-hidden="true">
+      <line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+      <polygon points="34,18 78,28 34,45" fill="var(--green)"/>
+    </svg>
+    <h1 id="title">Beat your average</h1>
+    <p class="sub" id="sub">Walk more than your usual day for a week. Your target comes from your own
+      walking, so everyone is beating their own number.</p>
+
+    <div id="prize" class="prize" hidden></div>
+    <div id="prizesub" class="prizesub" hidden></div>
+
+    <div class="facts" id="facts" hidden>
+      <div class="row"><span>Runs</span><b id="runs"></b></div>
+      <div class="row"><span id="entrylabel">Entry closes</span><b id="entry"></b></div>
+    </div>
+
+    <div class="btns">
+      <a class="btn primary" id="open" href="#">Open in the app</a>
+      <a class="btn ghost not-android" id="ios" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">Get it on iPhone</a>
+      <a class="btn ghost not-ios" id="android" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Android</a>
+    </div>
+    <p class="note">Free to enter. No ads, nothing to buy.</p>
+  </div>
+
+<script>
+  // Anonymous reads of `challenges` are what make this page possible without a
+  // server. Only ever published ones: the table is readable by anyone holding
+  // the app's anon key, drafts included, so the filter has to be applied here.
+  var SUPABASE = 'https://rvvqwdugquiinqapootg.supabase.co';
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2dnF3ZHVncXVpaW5xYXBvb3RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTEzMTMsImV4cCI6MjEwMTY2NzMxM30.HK-hwhinCEFlcn9BdDF5-RxnUqNGihQadPisxQWpi98';
+
+  // Two ways in, same as /q:
+  //   /c/<slug>     the address people paste, routed here by 404.html
+  //   /c/?s=<slug>  what 404.html rewrites it to
+  var qs = new URLSearchParams(location.search);
+  var slug = qs.get('s');
+  if (!slug) {
+    var last = location.pathname.replace(/\/+$/, '').split('/').pop();
+    if (last && last !== 'c') slug = last;
+  }
+
+  // One badge per device — an iPhone is never shown a Play link.
+  var ua = navigator.userAgent || '';
+  if (/iPhone|iPad|iPod/i.test(ua)) { document.getElementById('android').style.display = 'none'; }
+  else if (/Android/i.test(ua)) { document.getElementById('ios').style.display = 'none'; }
+
+  var openBtn = document.getElementById('open');
+  var tried = false;
+  function go(target, specific) {
+    openBtn.href = target;
+    if (specific && !tried && document.visibilityState === 'visible') {
+      tried = true;
+      setTimeout(function () { location.href = target; }, 200);
+    }
+  }
+
+  // Unlike quests, the app routes challenges BY SLUG — so the hand-off can fire
+  // immediately and does not wait on the lookup below. The fetch only fills in
+  // the prize and the dates for whoever does not have the app.
+  if (slug) go('sidequesting://challenge/' + encodeURIComponent(slug), true);
+  else openBtn.href = 'sidequesting://';
+
+  function inr(paise) { return '₹' + Math.round(paise / 100).toLocaleString('en-IN'); }
+  function d(s, opts) { return new Date(s).toLocaleDateString('en-IN', opts); }
+
+  if (slug) {
+    fetch(SUPABASE + '/rest/v1/challenges'
+      + '?select=title,prize_paise,starts_on,ends_on,draw_on,entry_opens_at,entry_closes_at'
+      + '&slug=eq.' + encodeURIComponent(slug)
+      + '&published_at=not.is.null', {
+      headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (rows) {
+        var ch = rows && rows[0];
+        if (!ch) return;
+        document.getElementById('title').textContent = ch.title;
+        document.title = ch.title + ' — SideQuesting';
+
+        var p = document.getElementById('prize');
+        p.textContent = inr(ch.prize_paise); p.hidden = false;
+        var ps = document.getElementById('prizesub');
+        ps.textContent = 'One winner · drawn ' + d(ch.draw_on, { weekday: 'short', day: 'numeric', month: 'short' });
+        ps.hidden = false;
+
+        var short = { day: 'numeric', month: 'short' };
+        document.getElementById('runs').textContent =
+          d(ch.starts_on, { day: 'numeric' }) + ' – ' + d(ch.ends_on, short);
+
+        // Before entry opens the useful date is when it OPENS; after, when it
+        // shuts. A closing time that has already passed is worse than useless.
+        var now = Date.now();
+        var opensAt = ch.entry_opens_at ? new Date(ch.entry_opens_at).getTime() : 0;
+        if (opensAt > now) {
+          document.getElementById('entrylabel').textContent = 'Entry opens';
+          document.getElementById('entry').textContent = d(ch.entry_opens_at, { weekday: 'long' });
+        } else {
+          document.getElementById('entrylabel').textContent = 'Entry closes';
+          document.getElementById('entry').textContent = d(ch.entry_closes_at, { weekday: 'long' });
+        }
+        document.getElementById('facts').hidden = false;
+      })
+      .catch(function () { /* the buttons above still work */ });
+  }
+</script>
+</body>
+</html>
