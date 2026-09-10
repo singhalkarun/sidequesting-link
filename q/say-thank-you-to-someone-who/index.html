@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q993QCY14D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q993QCY14D');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Say thank you to someone who will not expect it — SideQuesting</title>
+<meta name="description" content="Specific, out loud or written, for something they think nobody noticed.">
+<meta property="og:title" content="Say thank you to someone who will not expect it">
+<meta property="og:description" content="Specific, out loud or written, for something they think nobody noticed.">
+<meta property="og:image" content="https://sidequesting.club/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: light dark;
+    --page:#FFFFFF; --ink:#17181A; --muted:#85888C; --border:#E9EAEB; --green:#1C7A57; }
+  @media (prefers-color-scheme: dark) {
+    :root { --page:#0E0F11; --ink:#ECEDEF; --muted:#8B8E93; --border:#242629; --green:#3BAE82; } }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 16px/1.6 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased;
+    min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+  .card { width: 100%; max-width: 420px; text-align: center; }
+  .mark { margin-bottom: 22px; }
+  h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+  .sub { color: var(--muted); font-size: 15px; margin-top: 10px; }
+  .btns { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; }
+  .btn { display: block; padding: 14px 20px; border-radius: 12px; text-decoration: none;
+    font-size: 15px; font-weight: 700; }
+  .primary { background: var(--ink); color: var(--page); }
+  .ghost { border: 1px solid var(--border); color: var(--ink); }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <svg class="mark" width="30" height="30" viewBox="0 0 96 96" aria-hidden="true">
+      <line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+      <polygon points="34,18 78,28 34,45" fill="var(--green)"/>
+    </svg>
+    <h1 id="title">Do hard things. Every day.</h1>
+    <p class="sub" id="sub">Real-world quests, proven with live photos. Honest daily streaks.</p>
+    <div class="btns">
+      <a class="btn primary" id="open" href="#">Open in the app</a>
+      <a class="btn ghost" id="ios" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">Get it on iPhone</a>
+      <a class="btn ghost" id="android" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Android</a>
+    </div>
+    <p class="note">Already have the app? It should have opened automatically.</p>
+  </div>
+
+<script>
+  // Public anon key — the same one the app ships with, and it only grants
+  // what RLS allows: reading active quests.
+  var SUPABASE = 'https://rvvqwdugquiinqapootg.supabase.co';
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2dnF3ZHVncXVpaW5xYXBvb3RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTEzMTMsImV4cCI6MjEwMTY2NzMxM30.HK-hwhinCEFlcn9BdDF5-RxnUqNGihQadPisxQWpi98';
+
+  // Deep link without waiting for a native build. Universal Links (iOS
+  // associatedDomains / Android intentFilters) are configured but only take
+  // effect in the next binary; until then the custom scheme does the work.
+  // If the app is installed, sidequesting://quest/<id> takes over and this
+  // page is never seen. If it is not, nothing happens and the install
+  // buttons below are the answer.
+  // Three ways in, because a shared card is read by a human who types it:
+  //   /q/<slug>        the printed address, routed here by 404.html
+  //   /q/?s=<slug>     what 404.html rewrites it to
+  //   /q/?id=<uuid>    what the app itself links to
+  var qs = new URLSearchParams(location.search);
+  var slug = qs.get('s');
+  var id = qs.get('id');
+  if (!id) id = "4f93797a-1218-4466-b9ff-12d72adcf319"; // baked by build-link-pages.mjs
+  if (!slug && !id) {
+    var last = location.pathname.replace(/\/+$/, '').split('/').pop();
+    if (last && last !== 'q') slug = last;
+  }
+
+  var openBtn = document.getElementById('open');
+  var tried = false;
+  // Only auto-open when there is a specific quest to open. Firing the bare
+  // scheme achieves nothing on a phone and stalls a desktop browser, which
+  // is where a typed address often gets pasted first.
+  function go(target, specific) {
+    openBtn.href = target;
+    if (specific && !tried && document.visibilityState === 'visible') {
+      tried = true;
+      setTimeout(function () { location.href = target; }, 200);
+    }
+  }
+
+  // The app routes by id, not by slug — sidequesting://quest/<id> is the only
+  // form it understands — so a typed address has to be resolved first.
+  // Anonymous reads of active quests exist for exactly this page.
+  if (id) {
+    go('sidequesting://quest/' + encodeURIComponent(id), true);
+  } else if (slug) {
+    fetch(SUPABASE + '/rest/v1/quests?select=id,title&slug=eq.' + encodeURIComponent(slug) + '&is_active=eq.true', {
+      headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (rows) {
+        var q = rows && rows[0];
+        if (q && q.title) {
+          document.getElementById('title').textContent = q.title;
+          document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
+          document.title = q.title + ' — SideQuesting';
+        }
+        // Only now can we send an installed app to the right screen. If the
+        // quest is gone or the lookup fails, opening the app at all is still
+        // better than a dead link.
+        go(q && q.id ? 'sidequesting://quest/' + encodeURIComponent(q.id) : 'sidequesting://', !!(q && q.id));
+      })
+      .catch(function () { go('sidequesting://', false); });
+  } else {
+    openBtn.href = 'sidequesting://';
+  }
+
+  var t = qs.get('t');
+  if (t) {
+    document.getElementById('title').textContent = t;
+    document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
+    document.title = t + ' — SideQuesting';
+  }
+
+</script>
+</body>
+</html>
