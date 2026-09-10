@@ -14,13 +14,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SideQuesting</title>
 <script>
-  // GitHub Pages serves only real files, so sidequesting.club/q/<slug> — the
-  // address printed on every share card, because a human has to type it —
-  // would otherwise 404. Pages serves this file for unknown paths, so it
-  // forwards quest addresses to the real page and sends everything else home.
+  // GitHub Pages serves only real files, so sidequesting.club/q/<slug> and
+  // /c/<slug> — the addresses printed on share cards and forwarded into group
+  // chats, because a human has to be able to type them — would otherwise 404.
+  // Pages serves this file for unknown paths, so it forwards both shapes to
+  // their real page and sends everything else home.
   (function () {
-    var m = location.pathname.match(/^\/q\/([^\/?#]+)\/?$/);
-    location.replace(m ? '/q/?s=' + encodeURIComponent(m[1]) : '/');
+    var q = location.pathname.match(/^\/q\/([^\/?#]+)\/?$/);
+    if (q) return location.replace('/q/?s=' + encodeURIComponent(q[1]));
+    var c = location.pathname.match(/^\/c\/([^\/?#]+)\/?$/);
+    if (c) return location.replace('/c/?s=' + encodeURIComponent(c[1]));
+    location.replace('/');
   })();
 </script>
 <meta http-equiv="refresh" content="0; url=/">
