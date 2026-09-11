@@ -31,10 +31,10 @@ function run(file, url, ua) {
   const els = {};
   const gone = new Set();   // elements the page removed from the document
   const el = (id) => ({
-    id, style: {}, hidden: true, textContent: '', className: '',
+    id, style: {}, hidden: true, textContent: '', className: '', isConnected: true,
     href: id === 'ios' ? APP_STORE : id === 'android' ? PLAY : '#',
     addEventListener: (ev, fn) => { (handlers[id] ||= {})[ev] = fn; },
-    remove: () => gone.add(id),
+    remove() { gone.add(id); this.isConnected = false; },
   });
   const u = new URL(url);
   const ctx = {
@@ -86,6 +86,16 @@ for (const [file, url] of [
   check('with the app package named', href.includes('package=club.sidequesting.app'));
   check('and Play as the fallback', href.includes('S.browser_fallback_url=' + encodeURIComponent(PLAY)));
   check('the App Store badge is hidden', and.els.ios.style.display === 'none');
+
+  // The half that survives a store visit. Play hands `referrer` back to the
+  // app on first launch, so this is what turns an install into an arrival on
+  // the right screen rather than on a blank Today.
+  const want = 'utm_source=sidequesting.club&utm_medium=link&utm_content='
+    + encodeURIComponent(file.startsWith('c/') ? '/challenge/sep-21' : '/quest/00000000-0000-0000-0000-000000000000');
+  for (const [name, r] of [['Android', and], ['iPhone', ios]]) {
+    const play = r.els.android.href;
+    check(`${name}: the Play badge carries the destination`, play.includes('referrer=' + encodeURIComponent(want)), play.slice(0, 120));
+  }
 }
 
 console.log(failed ? `\n${failed} FAILED` : '\nall checks passed');

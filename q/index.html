@@ -84,8 +84,21 @@
   var ANDROID = /Android/i.test(ua);
   if (IOS) { document.getElementById('android').style.display = 'none'; }
   else if (ANDROID) { document.getElementById('ios').style.display = 'none'; }
-  var STORE = document.getElementById(IOS ? 'ios' : 'android').href;
   var openBtn = document.getElementById('open');
+
+  // Android carries the destination THROUGH the install. Play preserves the
+  // `referrer` parameter of a store URL and hands it to the app on first
+  // launch, so someone who taps a challenge link, installs, and opens the app
+  // arrives on the challenge instead of on a blank Today with no idea what
+  // their friend sent. utm_content holds the app path — /challenge/<slug> or
+  // /quest/<id>, the finished answer this page has already worked out — and
+  // lib/deep-links.ts asserts its shape before going anywhere near it. Apple passes nothing through an install —
+  // see docs/ops/links.md in the app repo for what is and is not possible.
+  function withReferrer(playUrl, path) {
+    if (!path) return playUrl;
+    var ref = 'utm_source=sidequesting.club&utm_medium=link&utm_content=' + encodeURIComponent('/' + path);
+    return playUrl + '&referrer=' + encodeURIComponent(ref);
+  }
 
   // NOTHING here may produce an error the visitor did not ask for. Two things
   // were learned the hard way on 2026-09-11:
@@ -116,12 +129,24 @@
   // scheme: Chrome hands it to the app if it is installed and follows
   // browser_fallback_url if it is not, so an unhandled scheme can never
   // surface as ERR_UNKNOWN_URL_SCHEME inside an in-app browser.
-  function appUrl(path) {
+  var playBadge = document.getElementById('android');
+  var PLAY = playBadge.href;
+
+  function appUrl(path, store) {
     if (!ANDROID) return 'sidequesting://' + path;
     return 'intent://' + path + '#Intent;scheme=sidequesting;package=club.sidequesting.app'
-      + ';S.browser_fallback_url=' + encodeURIComponent(STORE) + ';end';
+      + ';S.browser_fallback_url=' + encodeURIComponent(store) + ';end';
   }
-  function go(path) { openBtn.href = appUrl(path); }
+
+  // One call aims everything at the destination: the app button, the intent's
+  // own fallback, and — the one that matters for somebody who does not have
+  // the app yet — the Play badge itself, which is how most of them will
+  // install.
+  function go(path) {
+    var store = withReferrer(PLAY, path);
+    playBadge.href = store;
+    if (openBtn.isConnected) openBtn.href = appUrl(path, store);
+  }
   go('');
 
   // The app routes by id, not by slug — sidequesting://quest/<id> is the only
