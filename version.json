@@ -1,6 +1,6 @@
 {
   "versionCode": 231,
-  "forceBelow": 218,
+  "forceBelow": 0,
   "minNativeVersion": "1.1.1",
   "updateGate": "off",
   "updates": {
