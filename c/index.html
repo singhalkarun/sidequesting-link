@@ -100,39 +100,47 @@
   if (IOS) { document.getElementById('android').style.display = 'none'; }
   else if (ANDROID) { document.getElementById('ios').style.display = 'none'; }
   var STORE = document.getElementById(IOS ? 'ios' : 'android').href;
-
-  // Nothing hands off to the app on load any more. An iPhone WITHOUT the app
-  // answers an unhandled sidequesting:// with a modal — "Safari cannot open the
-  // page because the address is invalid" — thrown over a page the visitor has
-  // not read a word of yet (seen 2026-09-11 on /c/sep-21), and an in-app
-  // browser on Android answers it with ERR_UNKNOWN_URL_SCHEME. Everyone a
-  // shared link is FOR is someone without the app, so the automatic hand-off
-  // was aimed precisely at the people it breaks for. A phone that DOES have the
-  // app belongs to the Universal Link / App Link, which opens it before this
-  // page loads at all — /q/* is claimed today, /c/* is not (see
-  // .well-known/apple-app-site-association), so until it is, a challenge link
-  // costs an installed phone one tap.
-  //
-  // The tap keeps two routes, tried in turn: the app, then the store if the app
-  // did not take over — which includes the moment someone dismisses that modal.
   var openBtn = document.getElementById('open');
-  var target = 'sidequesting://';
-  function go(url) { target = url; openBtn.href = url; }
-  go(target);
-  openBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    var at = Date.now();
-    location.href = target;
-    if (!IOS && !ANDROID) return;  // a desktop browser has both badges in view
-    setTimeout(function () {
-      if (document.visibilityState === 'visible' && Date.now() - at < 4000) location.href = STORE;
-    }, 1500);
-  });
+
+  // NOTHING here may produce an error the visitor did not ask for. Two things
+  // were learned the hard way on 2026-09-11:
+  //
+  //   1. Firing sidequesting:// on load put Safari's "the address is invalid"
+  //      modal over a page nobody had read. Everyone a shared link is FOR is
+  //      someone without the app, so it was aimed at the people it breaks for.
+  //   2. Moving it behind a tap was not enough. The alert still appears, and
+  //      the store only opens after it is dismissed: "It still shows error when
+  //      I click open app in my safari though opens app store after that."
+  //
+  // So on an iPhone the app button is REMOVED and the App Store becomes the
+  // primary action. Nothing is lost: /q/* and /c/* are both claimed in
+  // .well-known/apple-app-site-association, so an iPhone that has the app is
+  // taken into it by the link itself and never loads this page — and one that
+  // does not have the app is being offered the only thing it can use. A tap on
+  // the store listing is safe either way: the App Store shows OPEN for an app
+  // already installed.
+  if (IOS) {
+    openBtn.remove();
+    document.getElementById('ios').className = 'btn primary';
+  }
+
+  // Android keeps the button, because its manifest claims /q but not yet /c —
+  // an installed phone can still land here. intent:// rather than the bare
+  // scheme: Chrome hands it to the app if it is installed and follows
+  // browser_fallback_url if it is not, so an unhandled scheme can never
+  // surface as ERR_UNKNOWN_URL_SCHEME inside an in-app browser.
+  function appUrl(path) {
+    if (!ANDROID) return 'sidequesting://' + path;
+    return 'intent://' + path + '#Intent;scheme=sidequesting;package=club.sidequesting.app'
+      + ';S.browser_fallback_url=' + encodeURIComponent(STORE) + ';end';
+  }
+  function go(path) { openBtn.href = appUrl(path); }
+  go('');
 
   // The app routes challenges BY SLUG, so the button is aimed before the lookup
   // below returns. The fetch only fills in the prize and the dates, which are
   // for whoever does not have the app.
-  if (slug) go('sidequesting://challenge/' + encodeURIComponent(slug));
+  if (slug) go('challenge/' + encodeURIComponent(slug));
 
   function inr(paise) { return '₹' + Math.round(paise / 100).toLocaleString('en-IN'); }
   function d(s, opts) { return new Date(s).toLocaleDateString('en-IN', opts); }
