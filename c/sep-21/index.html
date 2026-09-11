@@ -98,24 +98,44 @@
 
   // One badge per device — an iPhone is never shown a Play link.
   var ua = navigator.userAgent || '';
-  if (/iPhone|iPad|iPod/i.test(ua)) { document.getElementById('android').style.display = 'none'; }
-  else if (/Android/i.test(ua)) { document.getElementById('ios').style.display = 'none'; }
+  var IOS = /iPhone|iPad|iPod/i.test(ua);
+  var ANDROID = /Android/i.test(ua);
+  if (IOS) { document.getElementById('android').style.display = 'none'; }
+  else if (ANDROID) { document.getElementById('ios').style.display = 'none'; }
+  var STORE = document.getElementById(IOS ? 'ios' : 'android').href;
 
+  // Nothing hands off to the app on load any more. An iPhone WITHOUT the app
+  // answers an unhandled sidequesting:// with a modal — "Safari cannot open the
+  // page because the address is invalid" — thrown over a page the visitor has
+  // not read a word of yet (seen 2026-09-11 on /c/sep-21), and an in-app
+  // browser on Android answers it with ERR_UNKNOWN_URL_SCHEME. Everyone a
+  // shared link is FOR is someone without the app, so the automatic hand-off
+  // was aimed precisely at the people it breaks for. A phone that DOES have the
+  // app belongs to the Universal Link / App Link, which opens it before this
+  // page loads at all — /q/* is claimed today, /c/* is not (see
+  // .well-known/apple-app-site-association), so until it is, a challenge link
+  // costs an installed phone one tap.
+  //
+  // The tap keeps two routes, tried in turn: the app, then the store if the app
+  // did not take over — which includes the moment someone dismisses that modal.
   var openBtn = document.getElementById('open');
-  var tried = false;
-  function go(target, specific) {
-    openBtn.href = target;
-    if (specific && !tried && document.visibilityState === 'visible') {
-      tried = true;
-      setTimeout(function () { location.href = target; }, 200);
-    }
-  }
+  var target = 'sidequesting://';
+  function go(url) { target = url; openBtn.href = url; }
+  go(target);
+  openBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var at = Date.now();
+    location.href = target;
+    if (!IOS && !ANDROID) return;  // a desktop browser has both badges in view
+    setTimeout(function () {
+      if (document.visibilityState === 'visible' && Date.now() - at < 4000) location.href = STORE;
+    }, 1500);
+  });
 
-  // Unlike quests, the app routes challenges BY SLUG — so the hand-off can fire
-  // immediately and does not wait on the lookup below. The fetch only fills in
-  // the prize and the dates for whoever does not have the app.
-  if (slug) go('sidequesting://challenge/' + encodeURIComponent(slug), true);
-  else openBtn.href = 'sidequesting://';
+  // The app routes challenges BY SLUG, so the button is aimed before the lookup
+  // below returns. The fetch only fills in the prize and the dates, which are
+  // for whoever does not have the app.
+  if (slug) go('sidequesting://challenge/' + encodeURIComponent(slug));
 
   function inr(paise) { return '₹' + Math.round(paise / 100).toLocaleString('en-IN'); }
   function d(s, opts) { return new Date(s).toLocaleDateString('en-IN', opts); }

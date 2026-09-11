@@ -52,7 +52,7 @@
       <a class="btn ghost" id="ios" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">Get it on iPhone</a>
       <a class="btn ghost" id="android" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Android</a>
     </div>
-    <p class="note">Already have the app? It should have opened automatically.</p>
+    <p class="note">Have the app already? Open in the app takes you straight to it.</p>
   </div>
 
 <script>
@@ -79,24 +79,44 @@
     if (last && last !== 'q') slug = last;
   }
 
+  var ua = navigator.userAgent || '';
+  var IOS = /iPhone|iPad|iPod/i.test(ua);
+  var ANDROID = /Android/i.test(ua);
+  var STORE = document.getElementById(IOS ? 'ios' : 'android').href;
+
+  // Nothing hands off to the app on load any more. An iPhone WITHOUT the app
+  // answers an unhandled sidequesting:// with a modal — "Safari cannot open the
+  // page because the address is invalid" — thrown over a page the visitor has
+  // not read a word of yet (seen 2026-09-11 on /c/sep-21), and an in-app
+  // browser on Android answers it with ERR_UNKNOWN_URL_SCHEME. Everyone a
+  // shared link is FOR is someone without the app, so the automatic hand-off
+  // was aimed precisely at the people it breaks for. A phone that DOES have the
+  // app belongs to the Universal Link / App Link, which opens it before this
+  // page loads at all — /q/* is claimed today, /c/* is not (see
+  // .well-known/apple-app-site-association), so until it is, a challenge link
+  // costs an installed phone one tap.
+  //
+  // The tap keeps two routes, tried in turn: the app, then the store if the app
+  // did not take over — which includes the moment someone dismisses that modal.
   var openBtn = document.getElementById('open');
-  var tried = false;
-  // Only auto-open when there is a specific quest to open. Firing the bare
-  // scheme achieves nothing on a phone and stalls a desktop browser, which
-  // is where a typed address often gets pasted first.
-  function go(target, specific) {
-    openBtn.href = target;
-    if (specific && !tried && document.visibilityState === 'visible') {
-      tried = true;
-      setTimeout(function () { location.href = target; }, 200);
-    }
-  }
+  var target = 'sidequesting://';
+  function go(url) { target = url; openBtn.href = url; }
+  go(target);
+  openBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var at = Date.now();
+    location.href = target;
+    if (!IOS && !ANDROID) return;  // a desktop browser has both badges in view
+    setTimeout(function () {
+      if (document.visibilityState === 'visible' && Date.now() - at < 4000) location.href = STORE;
+    }, 1500);
+  });
 
   // The app routes by id, not by slug — sidequesting://quest/<id> is the only
   // form it understands — so a typed address has to be resolved first.
   // Anonymous reads of active quests exist for exactly this page.
   if (id) {
-    go('sidequesting://quest/' + encodeURIComponent(id), true);
+    go('sidequesting://quest/' + encodeURIComponent(id));
   } else if (slug) {
     fetch(SUPABASE + '/rest/v1/quests?select=id,title&slug=eq.' + encodeURIComponent(slug) + '&is_active=eq.true', {
       headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
@@ -109,14 +129,12 @@
           document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
           document.title = q.title + ' — SideQuesting';
         }
-        // Only now can we send an installed app to the right screen. If the
-        // quest is gone or the lookup fails, opening the app at all is still
-        // better than a dead link.
-        go(q && q.id ? 'sidequesting://quest/' + encodeURIComponent(q.id) : 'sidequesting://', !!(q && q.id));
+        // Only now can the button send an installed app to the right screen.
+        // If the quest is gone or the lookup fails, opening the app at all is
+        // still better than a dead link.
+        go(q && q.id ? 'sidequesting://quest/' + encodeURIComponent(q.id) : 'sidequesting://');
       })
-      .catch(function () { go('sidequesting://', false); });
-  } else {
-    openBtn.href = 'sidequesting://';
+      .catch(function () { go('sidequesting://'); });
   }
 
   var t = qs.get('t');
