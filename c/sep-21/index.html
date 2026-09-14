@@ -51,6 +51,16 @@
   .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
   /* One badge per device, same rule the home page keeps. */
   .not-ios, .not-android { display: block; }
+  .how { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--border); text-align: left; }
+  .how h2 { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 12px; }
+  .how h2 + ul { margin-top: 0; }
+  .steps { margin: 0 0 26px; padding-left: 1.3em; }
+  .steps li { margin-bottom: 14px; line-height: 1.55; color: var(--muted); font-size: .94rem; }
+  .steps li b { color: var(--ink); font-weight: 650; }
+  .notes { margin: 0; padding-left: 1.1em; list-style: none; }
+  .notes li { margin-bottom: 10px; line-height: 1.55; color: var(--muted); font-size: .94rem;
+              text-indent: -1.1em; }
+  .notes li b { color: var(--ink); font-weight: 650; }
 </style>
 </head>
 <body>
@@ -77,6 +87,23 @@
       <a class="btn ghost not-ios" id="android" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Android</a>
     </div>
     <p class="note">Free to enter. No ads, nothing to buy.</p>
+
+    <!-- WHAT IT IS, for somebody who has never heard of it.
+         This page is what a stranger sees when a neighbour forwards the link,
+         and until now it gave them a name that does not say what it is
+         ("Beat your average" — average of what?), one sentence, a prize and
+         two dates. Below the buttons, not above them: a person who already
+         knows should not scroll past an explanation to reach the store badge.
+         Every number is written by the script from the same row the app
+         reads, so this cannot drift from what the app says. -->
+    <div class="how" id="how" hidden>
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><b>Walk more than you usually do.</b> <span id="s1"></span></li>
+        <li><b>A target above your own average.</b> <span id="s2"></span></li>
+        <li><b id="s3t"></b> <span id="s3"></span></li>
+      </ol>
+    </div>
   </div>
 
 <script>
@@ -175,7 +202,7 @@
 
   if (slug) {
     fetch(SUPABASE + '/rest/v1/challenges'
-      + '?select=title,prize_paise,winner_count,prize_note,starts_on,ends_on,draw_on,entry_opens_at,entry_closes_at'
+      + '?select=title,prize_paise,winner_count,prize_note,qualify_days,starts_on,ends_on,draw_on,entry_opens_at,entry_closes_at'
       + '&slug=eq.' + encodeURIComponent(slug)
       + '&published_at=not.is.null', {
       headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
@@ -212,6 +239,41 @@
           ? prize + ' · drawn ' + drawn
           : 'One winner · drawn ' + drawn;
         ps.hidden = false;
+
+        // The explainer, written from this row so it cannot contradict the app
+        // (src/components/challenge-how.tsx says the same four things).
+        var dayCount = Math.round(
+          (new Date(ch.ends_on) - new Date(ch.starts_on)) / 86400000) + 1;
+        var longDay = { weekday: 'long', day: 'numeric', month: 'long' };
+        // en-GB, not en-IN: en-IN punctuates it "Sunday, 21 September", and a
+        // comma inside a clause reads as a list.
+        function dayWord(x) { return new Date(x).toLocaleDateString('en-GB', longDay); }
+
+        document.getElementById('s1').textContent =
+          'Every day from ' + dayWord(ch.starts_on) + ' to ' + dayWord(ch.ends_on) +
+          '. Nothing to log, nothing to post.';
+        document.getElementById('s2').textContent =
+          'We gather your step data from your phone and help you set a target above your average ' +
+          'for the last four weeks. It locks for all ' + dayCount + ' days.';
+        // The one rule that genuinely branches, and all that is kept of the
+        // step that used to state it alone: with a threshold everybody over
+        // the bar holds exactly one entry, without one they accumulate.
+        // Describing the wrong one describes a different game.
+        var earn = ch.qualify_days == null
+          ? 'Every day you beat your target is one entry.'
+          : 'Beat your target on any ' + ch.qualify_days + ' of the ' + dayCount +
+            ' days and you hold one entry, the same as everyone else who clears it.';
+
+        document.getElementById('s3t').textContent =
+          (winners > 1 ? winners + ' winners' : 'One winner') + ' at the end.';
+        document.getElementById('s3').textContent =
+          earn + ' They are drawn at random on ' + dayWord(ch.draw_on) + ', for ' + prize +
+          (ch.qualify_days == null
+            ? ' — every entry has the same chance, so the more days you walk the better your odds. '
+            : ' — everybody over the bar has the same chance. ') +
+          (winners > 1 ? 'Nobody wins twice. ' : '') +
+          'Every entry is numbered and published beforehand.';
+        document.getElementById('how').hidden = false;
 
         var short = { day: 'numeric', month: 'short' };
         document.getElementById('runs').textContent =
