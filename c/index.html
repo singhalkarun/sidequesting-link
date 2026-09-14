@@ -103,12 +103,11 @@
       </ol>
       <h2>Worth knowing</h2>
       <ul class="notes">
-        <li><b>It is free.</b> Nothing to buy, no subscription, no ads. Money can never buy an entry
-          or better odds.</li>
-        <li><b>Steps are read, never typed.</b> They come from Apple Health or Health Connect on your
-          own phone, and a day with hand-entered steps does not count.</li>
-        <li><b>Your goals and your streak are untouched.</b> The challenge target applies to the
-          challenge only.</li>
+        <li><b>It is free.</b> Nothing to buy, ever. Money cannot buy entries or better odds.</li>
+        <li><b>Steps are read, never typed.</b> They come from Apple Health or Health Connect.
+          A day with hand-entered steps does not count.</li>
+        <li><b>Your goals and your streak are untouched.</b> The challenge target applies here
+          only.</li>
         <li><b>Sharing earns you nothing.</b> No bonus entries, no better odds.</li>
       </ul>
     </div>
@@ -259,12 +258,10 @@
 
         document.getElementById('s1').textContent =
           'Every day from ' + dayWord(ch.starts_on) + ' to ' + dayWord(ch.ends_on) +
-          '. That is the whole challenge — no workouts to log, no photographs, nothing to post.';
+          '. Nothing to log, nothing to post.';
         document.getElementById('s2').textContent =
-          'The app reads the last four weeks of steps from your phone and works out a number that ' +
-          'is a genuine stretch for you. Somebody who walks 4,000 a day gets a different target ' +
-          'from somebody who walks 12,000, and both are working equally hard. It locks for all ' +
-          dayCount + ' days.';
+          'Your last four weeks of steps set it — somebody on 4,000 a day and somebody on 12,000 ' +
+          'get different targets. You pick, then it locks for all ' + dayCount + ' days.';
         // The one rule that genuinely branches, and it is a column. With a
         // threshold everybody over the bar holds exactly one entry and the odds
         // are flat; without one they accumulate. Describing the wrong one
@@ -273,27 +270,25 @@
         if (ch.qualify_days == null) {
           document.getElementById('s3t').textContent = 'Every day you beat it is one entry.';
           document.getElementById('s3').textContent =
-            'It is counted for you — there is nothing to tap. Miss a day and you keep every entry ' +
-            'you have already earned; there is no knock-out and nothing resets.';
+            'Counted for you — nothing to tap. Miss a day and you keep the entries you have.';
         } else {
           var spare = dayCount - ch.qualify_days;
           document.getElementById('s3t').textContent =
             'Beat it on any ' + ch.qualify_days + ' of the ' + dayCount + ' days.';
           document.getElementById('s3').textContent =
-            'That earns you one entry, and everyone who clears the bar holds exactly one — so the ' +
-            'odds are the same for all of you, however many days you walk beyond it. ' +
-            spare + (spare === 1 ? ' day off is' : ' days off are') + ' allowed.';
+            'That is one entry, and everyone over the bar holds exactly one — same odds for all ' +
+            'of you. ' + spare + (spare === 1 ? ' day off is' : ' days off are') + ' allowed.';
         }
         document.getElementById('s4t').textContent =
           (winners > 1 ? winners + ' winners' : 'One winner') + ' at the end.';
         document.getElementById('s4').textContent =
-          'On ' + dayWord(ch.draw_on) + ' the entries are drawn at random, for ' + prize + '. ' +
+          'Drawn at random on ' + dayWord(ch.draw_on) + ', for ' + prize + '. ' +
           (ch.qualify_days == null
-            ? 'More entries is better odds, not a guarantee — somebody who walked two days can ' +
-              'still beat somebody who walked all ' + dayCount + '. '
-            : 'Everybody who cleared the bar has exactly the same chance. ') +
-          (winners > 1 ? 'Nobody can win twice. ' : '') +
-          'Every entry is numbered and published before the draw, so anyone can check the result.';
+            ? 'More entries is better odds, not a guarantee — two days can still beat ' +
+              dayCount + '. '
+            : 'Everybody over the bar has the same chance. ') +
+          (winners > 1 ? 'Nobody wins twice. ' : '') +
+          'Every entry is numbered and published beforehand.';
         document.getElementById('how').hidden = false;
 
         var short = { day: 'numeric', month: 'short' };
