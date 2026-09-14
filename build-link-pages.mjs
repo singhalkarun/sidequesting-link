@@ -161,8 +161,12 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
     // head, and the app is handed the CURRENT slug so nothing downstream ever
     // sees the old one.
     for (const alias of ch.aliases ?? []) {
+      // head() has already pointed this page's canonical at ch.slug, because
+      // `out` was built with the canonical url — adding another was how the
+      // first alias page shipped with the tag twice. Two canonicals that agree
+      // are harmless and two that disagree are ignored by everything, so the
+      // rule is one, from the place that owns the head.
       const moved = out
-        .replace(/<title>/, `<link rel="canonical" href="https://sidequesting.club/c/${esc(ch.slug)}/">\n<title>`)
         .replace(/var qs = new URLSearchParams\(location\.search\);/,
                  `var qs = new URLSearchParams(location.search);\n  var CANONICAL = ${JSON.stringify(ch.slug)};`)
         .replace(/if \(last && last !== 'c'\) slug = last;/,
