@@ -99,7 +99,6 @@
         <li><b>Walk more than you usually do.</b> <span id="s1"></span></li>
         <li><b>A target above your own average.</b> <span id="s2"></span></li>
         <li><b id="s3t"></b> <span id="s3"></span></li>
-        <li><b id="s4t"></b> <span id="s4"></span></li>
       </ol>
     </div>
   </div>
@@ -253,31 +252,22 @@
         document.getElementById('s2').textContent =
           'We gather your step data from your phone and help you set a target above your average ' +
           'for the last four weeks. It locks for all ' + dayCount + ' days.';
-        // The one rule that genuinely branches, and it is a column. With a
-        // threshold everybody over the bar holds exactly one entry and the odds
-        // are flat; without one they accumulate. Describing the wrong one
-        // describes a different game — and this page is read by people
-        // deciding whether to install.
-        if (ch.qualify_days == null) {
-          document.getElementById('s3t').textContent = 'Every day you beat it is one entry.';
-          document.getElementById('s3').textContent =
-            'Counted for you — nothing to tap. Miss a day and you keep the entries you have.';
-        } else {
-          var spare = dayCount - ch.qualify_days;
-          document.getElementById('s3t').textContent =
-            'Beat it on any ' + ch.qualify_days + ' of the ' + dayCount + ' days.';
-          document.getElementById('s3').textContent =
-            'That is one entry, and everyone over the bar holds exactly one — same odds for all ' +
-            'of you. ' + spare + (spare === 1 ? ' day off is' : ' days off are') + ' allowed.';
-        }
-        document.getElementById('s4t').textContent =
+        // The one rule that genuinely branches, and all that is kept of the
+        // step that used to state it alone: with a threshold everybody over
+        // the bar holds exactly one entry, without one they accumulate.
+        // Describing the wrong one describes a different game.
+        var earn = ch.qualify_days == null
+          ? 'Every day you beat your target is one entry.'
+          : 'Beat your target on any ' + ch.qualify_days + ' of the ' + dayCount +
+            ' days and you hold one entry, the same as everyone else who clears it.';
+
+        document.getElementById('s3t').textContent =
           (winners > 1 ? winners + ' winners' : 'One winner') + ' at the end.';
-        document.getElementById('s4').textContent =
-          'Drawn at random on ' + dayWord(ch.draw_on) + ', for ' + prize + '. ' +
+        document.getElementById('s3').textContent =
+          earn + ' They are drawn at random on ' + dayWord(ch.draw_on) + ', for ' + prize +
           (ch.qualify_days == null
-            ? 'Every entry has the same chance, so the more days you beat your target the better ' +
-              'your odds. '
-            : 'Everybody over the bar has the same chance. ') +
+            ? ' — every entry has the same chance, so the more days you walk the better your odds. '
+            : ' — everybody over the bar has the same chance. ') +
           (winners > 1 ? 'Nobody wins twice. ' : '') +
           'Every entry is numbered and published beforehand.';
         document.getElementById('how').hidden = false;
