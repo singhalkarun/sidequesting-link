@@ -104,7 +104,7 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
   const list = await rows(
     SUPABASE,
     ANON,
-    'challenges?select=slug,title,prize_paise,winner_count,prize_note,starts_on,ends_on&published_at=not.is.null'
+    'challenges?select=slug,aliases,title,prize_paise,winner_count,prize_note,starts_on,ends_on&published_at=not.is.null'
   );
   if (!list.length) throw new Error('no published challenges — refusing to write nothing');
   if (!src.includes("last !== 'c'")) throw new Error('path-derived slug logic gone from c/index.html');
@@ -152,8 +152,28 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
     mkdirSync(`c/${ch.slug}`, { recursive: true });
     writeFileSync(`c/${ch.slug}/index.html`, out);
     console.log(`c/${ch.slug}/  ${winners > 1 ? `${winners} winners · ` : ''}${prize}  ${range}`);
+
+    // Old addresses get a real page each, not a redirect rule. A shared link
+    // outlives the plan that named it — `sep-21` was in a WhatsApp group
+    // before the date moved — and a crawler reads the STATUS, so a 404 or a
+    // client-side bounce costs the preview card that is the only thing most
+    // people see before tapping. Same card, same page, canonical link in the
+    // head, and the app is handed the CURRENT slug so nothing downstream ever
+    // sees the old one.
+    for (const alias of ch.aliases ?? []) {
+      const moved = out
+        .replace(/<title>/, `<link rel="canonical" href="https://sidequesting.club/c/${esc(ch.slug)}/">\n<title>`)
+        .replace(/var qs = new URLSearchParams\(location\.search\);/,
+                 `var qs = new URLSearchParams(location.search);\n  var CANONICAL = ${JSON.stringify(ch.slug)};`)
+        .replace(/if \(last && last !== 'c'\) slug = last;/,
+                 `if (last && last !== 'c') slug = last;\n  if (slug && slug !== CANONICAL) slug = CANONICAL;`);
+      if (!moved.includes('CANONICAL')) throw new Error(`alias rewrite missed for ${alias}`);
+      mkdirSync(`c/${alias}`, { recursive: true });
+      writeFileSync(`c/${alias}/index.html`, moved);
+      console.log(`c/${alias}/  → ${ch.slug} (old address)`);
+    }
   }
-  const gone = prune('c', new Set(list.map((c) => c.slug)));
+  const gone = prune('c', new Set(list.flatMap((c) => [c.slug, ...(c.aliases ?? [])])));
   if (gone.length) console.log(`  pruned unpublished: ${gone.join(', ')}`);
 }
 
