@@ -10,7 +10,6 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://sidequesting.club/c/beat-your-average/">
 <title>Beat your average — free walking challenge — SideQuesting</title>
 <!-- These four lines ARE the WhatsApp preview card, which is the only image the
      invite ever carries. Static, because a forwarded link is unfurled by
@@ -118,12 +117,10 @@
   //   /c/<slug>     the address people paste, routed here by 404.html
   //   /c/?s=<slug>  what 404.html rewrites it to
   var qs = new URLSearchParams(location.search);
-  var CANONICAL = "beat-your-average";
   var slug = qs.get('s');
   if (!slug) {
     var last = location.pathname.replace(/\/+$/, '').split('/').pop();
     if (last && last !== 'c') slug = last;
-  if (slug && slug !== CANONICAL) slug = CANONICAL;
   }
 
   // One badge per device — an iPhone is never shown a Play link.
