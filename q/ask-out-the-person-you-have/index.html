@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q993QCY14D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q993QCY14D');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask out the person you have been meaning to ask out — SideQuesting</title>
+<meta name="description" content="If it goes badly you were completing a side quest, and that is exactly what it is for.">
+<meta property="og:title" content="Ask out the person you have been meaning to ask out">
+<meta property="og:description" content="If it goes badly you were completing a side quest, and that is exactly what it is for.">
+<meta property="og:image" content="https://sidequesting.club/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: light dark;
+    --page:#FFFFFF; --ink:#17181A; --muted:#85888C; --border:#E9EAEB; --green:#1C7A57; }
+  @media (prefers-color-scheme: dark) {
+    :root { --page:#0E0F11; --ink:#ECEDEF; --muted:#8B8E93; --border:#242629; --green:#3BAE82; } }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 16px/1.6 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased;
+    min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+  .card { width: 100%; max-width: 420px; text-align: center; }
+  .mark { margin-bottom: 22px; }
+  h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+  .sub { color: var(--muted); font-size: 15px; margin-top: 10px; }
+  .btns { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; }
+  .btn { display: block; padding: 14px 20px; border-radius: 12px; text-decoration: none;
+    font-size: 15px; font-weight: 700; }
+  .primary { background: var(--ink); color: var(--page); }
+  .ghost { border: 1px solid var(--border); color: var(--ink); }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <svg class="mark" width="30" height="30" viewBox="0 0 96 96" aria-hidden="true">
+      <line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+      <polygon points="34,18 78,28 34,45" fill="var(--green)"/>
+    </svg>
+    <h1 id="title">Do hard things. Every day.</h1>
+    <p class="sub" id="sub">Real-world quests, proven with live photos. Honest daily streaks.</p>
+    <div class="btns">
+      <a class="btn primary" id="open" href="#">Open in the app</a>
+      <a class="btn ghost" id="ios" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">Get it on iPhone</a>
+      <a class="btn ghost" id="android" href="https://play.google.com/store/apps/details?id=club.sidequesting.app">Get it on Android</a>
+    </div>
+    <p class="note" id="note">Have the app already? Open in the app takes you straight to it.</p>
+  </div>
+
+<script>
+  // Public anon key — the same one the app ships with, and it only grants
+  // what RLS allows: reading active quests.
+  var SUPABASE = 'https://rvvqwdugquiinqapootg.supabase.co';
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2dnF3ZHVncXVpaW5xYXBvb3RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTEzMTMsImV4cCI6MjEwMTY2NzMxM30.HK-hwhinCEFlcn9BdDF5-RxnUqNGihQadPisxQWpi98';
+
+  // Deep link without waiting for a native build. Universal Links (iOS
+  // associatedDomains / Android intentFilters) are configured but only take
+  // effect in the next binary; until then the custom scheme does the work.
+  // If the app is installed, sidequesting://quest/<id> takes over and this
+  // page is never seen. If it is not, nothing happens and the install
+  // buttons below are the answer.
+  // Three ways in, because a shared card is read by a human who types it:
+  //   /q/<slug>        the printed address, routed here by 404.html
+  //   /q/?s=<slug>     what 404.html rewrites it to
+  //   /q/?id=<uuid>    what the app itself links to
+  var qs = new URLSearchParams(location.search);
+  var slug = qs.get('s');
+  var id = qs.get('id');
+  if (!id) id = "58495b47-bec4-4d41-b275-b176355a17c1"; // baked by build-link-pages.mjs
+  if (!slug && !id) {
+    var last = location.pathname.replace(/\/+$/, '').split('/').pop();
+    if (last && last !== 'q') slug = last;
+  }
+
+  var ua = navigator.userAgent || '';
+  var IOS = /iPhone|iPad|iPod/i.test(ua);
+  var ANDROID = /Android/i.test(ua);
+  if (IOS) { document.getElementById('android').style.display = 'none'; }
+  else if (ANDROID) { document.getElementById('ios').style.display = 'none'; }
+  var openBtn = document.getElementById('open');
+
+  // Android carries the destination THROUGH the install. Play preserves the
+  // `referrer` parameter of a store URL and hands it to the app on first
+  // launch, so someone who taps a challenge link, installs, and opens the app
+  // arrives on the challenge instead of on a blank Today with no idea what
+  // their friend sent. utm_content holds the app path — /challenge/<slug> or
+  // /quest/<id>, the finished answer this page has already worked out — and
+  // lib/deep-links.ts asserts its shape before going anywhere near it. Apple passes nothing through an install —
+  // see docs/ops/links.md in the app repo for what is and is not possible.
+  function withReferrer(playUrl, path) {
+    if (!path) return playUrl;
+    var ref = 'utm_source=sidequesting.club&utm_medium=link&utm_content=' + encodeURIComponent('/' + path);
+    return playUrl + '&referrer=' + encodeURIComponent(ref);
+  }
+
+  // NOTHING here may produce an error the visitor did not ask for. Two things
+  // were learned the hard way on 2026-09-11:
+  //
+  //   1. Firing sidequesting:// on load put Safari's "the address is invalid"
+  //      modal over a page nobody had read. Everyone a shared link is FOR is
+  //      someone without the app, so it was aimed at the people it breaks for.
+  //   2. Moving it behind a tap was not enough. The alert still appears, and
+  //      the store only opens after it is dismissed: "It still shows error when
+  //      I click open app in my safari though opens app store after that."
+  //
+  // So on an iPhone the app button is REMOVED and the App Store becomes the
+  // primary action. Nothing is lost: /q/* and /c/* are both claimed in
+  // .well-known/apple-app-site-association, so an iPhone that has the app is
+  // taken into it by the link itself and never loads this page — and one that
+  // does not have the app is being offered the only thing it can use. A tap on
+  // the store listing is safe either way: the App Store shows OPEN for an app
+  // already installed.
+  if (IOS) {
+    openBtn.remove();
+    document.getElementById('ios').className = 'btn primary';
+    var note = document.getElementById('note');
+    if (note) note.remove();   // it named a button that is no longer there
+  }
+
+  // Android keeps the button, because its manifest claims /q but not yet /c —
+  // an installed phone can still land here. intent:// rather than the bare
+  // scheme: Chrome hands it to the app if it is installed and follows
+  // browser_fallback_url if it is not, so an unhandled scheme can never
+  // surface as ERR_UNKNOWN_URL_SCHEME inside an in-app browser.
+  var playBadge = document.getElementById('android');
+  var PLAY = playBadge.href;
+
+  function appUrl(path, store) {
+    if (!ANDROID) return 'sidequesting://' + path;
+    return 'intent://' + path + '#Intent;scheme=sidequesting;package=club.sidequesting.app'
+      + ';S.browser_fallback_url=' + encodeURIComponent(store) + ';end';
+  }
+
+  // One call aims everything at the destination: the app button, the intent's
+  // own fallback, and — the one that matters for somebody who does not have
+  // the app yet — the Play badge itself, which is how most of them will
+  // install.
+  function go(path) {
+    var store = withReferrer(PLAY, path);
+    playBadge.href = store;
+    if (openBtn.isConnected) openBtn.href = appUrl(path, store);
+  }
+  go('');
+
+  // The app routes by id, not by slug — sidequesting://quest/<id> is the only
+  // form it understands — so a typed address has to be resolved first.
+  // Anonymous reads of active quests exist for exactly this page.
+  if (id) {
+    go('quest/' + encodeURIComponent(id));
+  } else if (slug) {
+    fetch(SUPABASE + '/rest/v1/quests?select=id,title&slug=eq.' + encodeURIComponent(slug) + '&is_active=eq.true', {
+      headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (rows) {
+        var q = rows && rows[0];
+        if (q && q.title) {
+          document.getElementById('title').textContent = q.title;
+          document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
+          document.title = q.title + ' — SideQuesting';
+        }
+        // Only now can the button send an installed app to the right screen.
+        // If the quest is gone or the lookup fails, opening the app at all is
+        // still better than a dead link.
+        go(q && q.id ? 'quest/' + encodeURIComponent(q.id) : '');
+      })
+      .catch(function () { go(''); });
+  }
+
+  var t = qs.get('t');
+  if (t) {
+    document.getElementById('title').textContent = t;
+    document.getElementById('sub').textContent = 'Someone did this on SideQuesting. Your turn.';
+    document.title = t + ' — SideQuesting';
+  }
+
+</script>
+</body>
+</html>
