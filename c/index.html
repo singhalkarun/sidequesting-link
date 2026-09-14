@@ -101,15 +101,6 @@
         <li><b id="s3t"></b> <span id="s3"></span></li>
         <li><b id="s4t"></b> <span id="s4"></span></li>
       </ol>
-      <h2>Worth knowing</h2>
-      <ul class="notes">
-        <li><b>It is free.</b> Nothing to buy, ever. Money cannot buy entries or better odds.</li>
-        <li><b>Steps are read, never typed.</b> They come from Apple Health or Health Connect.
-          A day with hand-entered steps does not count.</li>
-        <li><b>Your goals and your streak are untouched.</b> The challenge target applies here
-          only.</li>
-        <li><b>Sharing earns you nothing.</b> No bonus entries, no better odds.</li>
-      </ul>
     </div>
   </div>
 
@@ -284,8 +275,8 @@
         document.getElementById('s4').textContent =
           'Drawn at random on ' + dayWord(ch.draw_on) + ', for ' + prize + '. ' +
           (ch.qualify_days == null
-            ? 'More entries is better odds, not a guarantee — two days can still beat ' +
-              dayCount + '. '
+            ? 'Every entry has the same chance, so the more days you beat your target the better ' +
+              'your odds. '
             : 'Everybody over the bar has the same chance. ') +
           (winners > 1 ? 'Nobody wins twice. ' : '') +
           'Every entry is numbered and published beforehand.';
