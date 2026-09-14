@@ -175,7 +175,7 @@
 
   if (slug) {
     fetch(SUPABASE + '/rest/v1/challenges'
-      + '?select=title,prize_paise,starts_on,ends_on,draw_on,entry_opens_at,entry_closes_at'
+      + '?select=title,prize_paise,winner_count,prize_note,starts_on,ends_on,draw_on,entry_opens_at,entry_closes_at'
       + '&slug=eq.' + encodeURIComponent(slug)
       + '&published_at=not.is.null', {
       headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
@@ -187,10 +187,30 @@
         document.getElementById('title').textContent = ch.title;
         document.title = ch.title + ' — SideQuesting';
 
+        // What takes the big line depends on how many people win — the same
+        // swap the app's challenge page makes (src/lib/challenge, prizeHeadline).
+        // At one winner the money is the object. At five it cannot be: ₹2,000
+        // set large above "5 winners" reads as ₹2,000 each, and the other four
+        // prizes may not have a figure at all yet. So the count leads and the
+        // money moves to the line under it, where it still appears.
+        var WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+        var winners = Math.max(1, Number(ch.winner_count == null ? 1 : ch.winner_count));
+        var more = winners - 1;
+        // prize_note names the brands once they are signed. Until then the only
+        // true things are the cash figure and how many more prizes there are,
+        // and that is exactly what this says.
+        var prize = ch.prize_note ? ch.prize_note
+          : more < 1 ? inr(ch.prize_paise)
+          : inr(ch.prize_paise) + ' cash and ' + (WORDS[more] || more) + ' more prize' + (more === 1 ? '' : 's');
+        var drawn = d(ch.draw_on, { weekday: 'short', day: 'numeric', month: 'short' });
+
         var p = document.getElementById('prize');
-        p.textContent = inr(ch.prize_paise); p.hidden = false;
+        p.textContent = winners > 1 ? winners + ' winners' : inr(ch.prize_paise);
+        p.hidden = false;
         var ps = document.getElementById('prizesub');
-        ps.textContent = 'One winner · drawn ' + d(ch.draw_on, { weekday: 'short', day: 'numeric', month: 'short' });
+        ps.textContent = winners > 1
+          ? prize + ' · drawn ' + drawn
+          : 'One winner · drawn ' + drawn;
         ps.hidden = false;
 
         var short = { day: 'numeric', month: 'short' };
