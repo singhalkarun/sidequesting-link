@@ -104,7 +104,7 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
   const list = await rows(
     SUPABASE,
     ANON,
-    'challenges?select=slug,title,prize_paise,starts_on,ends_on&published_at=not.is.null'
+    'challenges?select=slug,title,prize_paise,winner_count,prize_note,starts_on,ends_on&published_at=not.is.null'
   );
   if (!list.length) throw new Error('no published challenges — refusing to write nothing');
   if (!src.includes("last !== 'c'")) throw new Error('path-derived slug logic gone from c/index.html');
@@ -118,18 +118,40 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
       ? `${day(ch.starts_on, { day: 'numeric' })}–${day(ch.ends_on, { day: 'numeric', month: 'long' })}`
       : `${day(ch.starts_on, { day: 'numeric', month: 'short' })} – ${day(ch.ends_on, { day: 'numeric', month: 'short' })}`;
 
+    // The offer, written the same way the app writes it (src/lib/challenge's
+    // prizeSentence). A stranger forwarded this link reads this sentence in a
+    // WhatsApp preview and nowhere else, so it cannot be the one surface still
+    // saying "one winner" once there are five — and it cannot name prizes that
+    // have no name yet either, so at winner_count > 1 with no prize_note it
+    // says the cash figure and how many more there are.
+    const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+    const winners = Math.max(1, Number(ch.winner_count ?? 1));
+    const more = winners - 1;
+    const prize = ch.prize_note
+      ? ch.prize_note
+      : more < 1
+        ? inr(ch.prize_paise)
+        : `${inr(ch.prize_paise)} cash and ${WORDS[more] ?? more} more prize${more === 1 ? '' : 's'}`;
+    const offer = winners > 1
+      ? `Free to enter — ${winners} winners: ${prize}.`
+      : `Free to enter, one winner takes ${prize}.`;
+
     const out = head(src, {
       title: `${ch.title} — free walking challenge`,
-      desc: `Walk more than your usual day, ${range}. Free to enter, one winner takes ${inr(ch.prize_paise)}.`,
+      desc: `Walk more than your usual day, ${range}. ${offer}`,
       url: `https://sidequesting.club/c/${ch.slug}/`,
       image: OG_CHALLENGE,
     });
+    // The cash figure is in prize_note too unless somebody wrote a note that
+    // drops it, which would be a mistake worth failing the build over.
     if (!out.includes(esc(inr(ch.prize_paise)))) throw new Error(`prize missing from og: for ${ch.slug}`);
+    if (winners > 1 && !out.includes(`${winners} winners`))
+      throw new Error(`winner count missing from og: for ${ch.slug}`);
     if (!out.includes(OG_CHALLENGE)) throw new Error(`challenge og:image not set for ${ch.slug}`);
 
     mkdirSync(`c/${ch.slug}`, { recursive: true });
     writeFileSync(`c/${ch.slug}/index.html`, out);
-    console.log(`c/${ch.slug}/  ${inr(ch.prize_paise)}  ${range}`);
+    console.log(`c/${ch.slug}/  ${winners > 1 ? `${winners} winners · ` : ''}${prize}  ${range}`);
   }
   const gone = prune('c', new Set(list.map((c) => c.slug)));
   if (gone.length) console.log(`  pruned unpublished: ${gone.join(', ')}`);
