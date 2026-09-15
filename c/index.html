@@ -199,7 +199,7 @@
 
   if (slug) {
     fetch(SUPABASE + '/rest/v1/challenges'
-      + '?select=title,prize_paise,winner_count,prize_note,qualify_days,starts_on,ends_on,draw_on,entry_opens_at,entry_closes_at'
+      + '?select=title,prize_paise,winner_count,prize_note,qualify_days,dates_announced,starts_on,ends_on,draw_on,entry_opens_at,entry_closes_at'
       + '&slug=eq.' + encodeURIComponent(slug)
       + '&published_at=not.is.null', {
       headers: { apikey: ANON, Authorization: 'Bearer ' + ANON },
@@ -220,6 +220,12 @@
         var WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
         var winners = Math.max(1, Number(ch.winner_count == null ? 1 : ch.winner_count));
         var more = winners - 1;
+        // The dates underneath are real and ordered — the app needs them — they
+        // are simply not the ones to tell anybody while the run is being moved.
+        // Declared HERE, above its first use: `var` hoists, so left further
+        // down it read as undefined and every prize line said "drawn when it
+        // ends" even after the dates were announced.
+        var announced = ch.dates_announced !== false;
         // prize_note names the brands once they are signed. Until then the only
         // true things are the cash figure and how many more prizes there are,
         // and that is exactly what this says.
@@ -232,9 +238,11 @@
         p.textContent = winners > 1 ? winners + ' winners' : inr(ch.prize_paise);
         p.hidden = false;
         var ps = document.getElementById('prizesub');
-        ps.textContent = winners > 1
-          ? prize + ' · drawn ' + drawn
-          : 'One winner · drawn ' + drawn;
+        ps.textContent = !announced
+          ? prize + ' · drawn when it ends'
+          : winners > 1
+            ? prize + ' · drawn ' + drawn
+            : 'One winner · drawn ' + drawn;
         ps.hidden = false;
 
         // The explainer, written from this row so it cannot contradict the app
@@ -247,8 +255,10 @@
         function dayWord(x) { return new Date(x).toLocaleDateString('en-GB', longDay); }
 
         document.getElementById('s1').textContent =
-          'Every day from ' + dayWord(ch.starts_on) + ' to ' + dayWord(ch.ends_on) +
-          '. Nothing to log, nothing to post.';
+          (announced
+            ? 'Every day from ' + dayWord(ch.starts_on) + ' to ' + dayWord(ch.ends_on) + '. '
+            : 'Every day for ' + dayCount + ' days — the dates are being set and we will announce them. ') +
+          'Nothing to log, nothing to post.';
         document.getElementById('s2').textContent =
           'We gather your step data from your phone and help you set a target above your average ' +
           'for the last four weeks. It locks for all ' + dayCount + ' days.';
@@ -264,7 +274,9 @@
         document.getElementById('s3t').textContent =
           (winners > 1 ? winners + ' winners' : 'One winner') + ' at the end.';
         document.getElementById('s3').textContent =
-          earn + ' They are drawn at random on ' + dayWord(ch.draw_on) + ', for ' + prize +
+          earn + ' They are drawn at random ' +
+          (announced ? 'on ' + dayWord(ch.draw_on) : 'once the ' + dayCount + ' days are up') +
+          ', for ' + prize +
           (ch.qualify_days == null
             ? ' — every entry has the same chance, so the more days you walk the better your odds. '
             : ' — everybody over the bar has the same chance. ') +
@@ -273,19 +285,27 @@
         document.getElementById('how').hidden = false;
 
         var short = { day: 'numeric', month: 'short' };
-        document.getElementById('runs').textContent =
-          d(ch.starts_on, { day: 'numeric' }) + ' – ' + d(ch.ends_on, short);
-
-        // Before entry opens the useful date is when it OPENS; after, when it
-        // shuts. A closing time that has already passed is worse than useless.
-        var now = Date.now();
-        var opensAt = ch.entry_opens_at ? new Date(ch.entry_opens_at).getTime() : 0;
-        if (opensAt > now) {
-          document.getElementById('entrylabel').textContent = 'Entry opens';
-          document.getElementById('entry').textContent = d(ch.entry_opens_at, { weekday: 'long' });
+        if (!announced) {
+          // Both the entry rows are derived from a date that is moving, so
+          // showing them as blanks would be two lines saying the same nothing.
+          document.getElementById('runs').textContent = dayCount + ' days';
+          document.getElementById('entrylabel').textContent = 'Dates';
+          document.getElementById('entry').textContent = 'To be announced';
         } else {
-          document.getElementById('entrylabel').textContent = 'Entry closes';
-          document.getElementById('entry').textContent = d(ch.entry_closes_at, { weekday: 'long' });
+          document.getElementById('runs').textContent =
+            d(ch.starts_on, { day: 'numeric' }) + ' – ' + d(ch.ends_on, short);
+
+          // Before entry opens the useful date is when it OPENS; after, when it
+          // shuts. A closing time that has already passed is worse than useless.
+          var now = Date.now();
+          var opensAt = ch.entry_opens_at ? new Date(ch.entry_opens_at).getTime() : 0;
+          if (opensAt > now) {
+            document.getElementById('entrylabel').textContent = 'Entry opens';
+            document.getElementById('entry').textContent = d(ch.entry_opens_at, { weekday: 'long' });
+          } else {
+            document.getElementById('entrylabel').textContent = 'Entry closes';
+            document.getElementById('entry').textContent = d(ch.entry_closes_at, { weekday: 'long' });
+          }
         }
         document.getElementById('facts').hidden = false;
       })
