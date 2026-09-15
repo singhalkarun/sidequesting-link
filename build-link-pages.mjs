@@ -104,12 +104,14 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
   const list = await rows(
     SUPABASE,
     ANON,
-    'challenges?select=slug,aliases,title,prize_paise,winner_count,prize_note,starts_on,ends_on&published_at=not.is.null'
+    'challenges?select=slug,aliases,title,prize_paise,winner_count,prize_note,dates_announced,starts_on,ends_on&published_at=not.is.null'
   );
   if (!list.length) throw new Error('no published challenges — refusing to write nothing');
   if (!src.includes("last !== 'c'")) throw new Error('path-derived slug logic gone from c/index.html');
 
   const inr = (p) => '₹' + Math.round(p / 100).toLocaleString('en-IN');
+  const dayCount = (c) =>
+    Math.round((new Date(c.ends_on) - new Date(c.starts_on)) / 86400000) + 1;
   const day = (s, o) => new Date(s).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', ...o });
 
   for (const ch of list) {
@@ -117,6 +119,14 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
     const range = sameMonth
       ? `${day(ch.starts_on, { day: 'numeric' })}–${day(ch.ends_on, { day: 'numeric', month: 'long' })}`
       : `${day(ch.starts_on, { day: 'numeric', month: 'short' })} – ${day(ch.ends_on, { day: 'numeric', month: 'short' })}`;
+
+    // The preview card is BUILT here, while the page body reads the flag in
+    // the browser — so this needs telling separately, and the first version
+    // was not. The card said "21–27 September" over a page that said the dates
+    // were still being set, which is the contradiction the flag exists to
+    // prevent, shown to the only reader who sees the card and not the page.
+    const dated = ch.dates_announced !== false;
+    const when = dated ? `, ${range}` : ` for ${dayCount(ch)} days`;
 
     // The offer, written the same way the app writes it (src/lib/challenge's
     // prizeSentence). A stranger forwarded this link reads this sentence in a
@@ -138,7 +148,7 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
 
     const out = head(src, {
       title: `${ch.title} — free walking challenge`,
-      desc: `Walk more than your usual day, ${range}. ${offer}`,
+      desc: `Walk more than your usual day${when}. ${offer}`,
       url: `https://sidequesting.club/c/${ch.slug}/`,
       image: OG_CHALLENGE,
     });
@@ -151,7 +161,7 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
 
     mkdirSync(`c/${ch.slug}`, { recursive: true });
     writeFileSync(`c/${ch.slug}/index.html`, out);
-    console.log(`c/${ch.slug}/  ${winners > 1 ? `${winners} winners · ` : ''}${prize}  ${range}`);
+    console.log(`c/${ch.slug}/  ${winners > 1 ? `${winners} winners · ` : ''}${prize}  ${dated ? range : 'dates TBA'}`);
 
     // Old addresses get a real page each, not a redirect rule. A shared link
     // outlives the plan that named it — `sep-21` was in a WhatsApp group
