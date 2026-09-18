@@ -1,11 +1,11 @@
 {
-  "versionCode": 252,
+  "versionCode": 253,
   "forceBelow": 0,
   "minNativeVersion": "1.1.1",
   "updateGate": "off",
   "updates": {
-    "ios": "01a0b424-c821-7549-b6cd-28b85b4f44af",
-    "android": "01a0b426-5405-72a2-94f8-ddd856eade64"
+    "ios": "01a0b45c-b7da-776b-bd8c-8a72ae5016db",
+    "android": "01a0b45e-28e6-7991-a59e-bc8c19329361"
   },
   "apkUrl": "https://expo.dev/artifacts/eas/2eE7MeI2r5vqbBt7WbBwls2cKYB9nJAhmKuxyXbI2F4.apk",
   "requiredNativeModules": [
