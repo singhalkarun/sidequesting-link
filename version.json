@@ -1,8 +1,6 @@
 {
   "versionCode": 260,
-  "forceBelow": 0,
-  "minNativeVersion": "1.1.1",
-  "updateGate": "off",
+  "forceBelow": 260,
   "updates": {
     "ios": "01a0b842-2743-7c4c-bb83-5c0ee74249a1",
     "android": "01a0b843-aa7f-7f37-a710-538cfad086f4"
