@@ -16,7 +16,7 @@
 <meta name="description" content="A neighbourhood, a park, a market — anywhere new to you. Bring back one photo.">
 <meta property="og:title" content="Go somewhere in your city you have never been">
 <meta property="og:description" content="A neighbourhood, a park, a market — anywhere new to you. Bring back one photo.">
-<meta property="og:image" content="https://sidequesting.club/og.jpg">
+<meta property="og:image" content="https://rvvqwdugquiinqapootg.supabase.co/storage/v1/object/public/quest-covers/ae1b0ec4-e010-432f-986c-2645a1cf3bf7.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='34' y1='18' x2='34' y2='80' stroke='%2317181A' stroke-width='10' stroke-linecap='round'/%3E%3Cpolygon points='34,18 78,28 34,45' fill='%231C7A57'/%3E%3C/svg%3E">
 <style>
   :root { color-scheme: light dark;
@@ -26,8 +26,9 @@
   * { box-sizing: border-box; margin: 0; }
   body { font: 16px/1.6 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
     background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased;
-    min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
-  .card { width: 100%; max-width: 420px; text-align: center; }
+    min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; padding: 24px; }
+  /* min-width: 0, or a 1200px cover sizes the grid track and the card runs off the screen. */
+  .card { width: 100%; max-width: 420px; min-width: 0; text-align: center; }
   .mark { margin-bottom: 22px; }
   h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
   .sub { color: var(--muted); font-size: 15px; margin-top: 10px; }
@@ -37,6 +38,15 @@
   .primary { background: var(--ink); color: var(--page); }
   .ghost { border: 1px solid var(--border); color: var(--ink); }
   .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
+  /* The quest's own cover, baked in by build-link-pages.mjs. Hidden until it
+     has a src, so the generic page is unchanged. */
+  .cover { display: block; width: 100%; max-width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
+    border-radius: 16px; margin-bottom: 22px; background: var(--border); }
+  .cover[hidden], .from[hidden] { display: none; }
+  /* Who sent it. The first thing a friend needs to know is why this is in
+     front of them; the quest is the second. */
+  .from { color: var(--green); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -45,8 +55,10 @@
       <line x1="34" y1="18" x2="34" y2="80" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
       <polygon points="34,18 78,28 34,45" fill="var(--green)"/>
     </svg>
-    <h1 id="title">Do hard things. Every day.</h1>
-    <p class="sub" id="sub">Real-world quests, proven with live photos. Honest daily streaks.</p>
+    <img class="cover" id="cover" alt="" src="https://rvvqwdugquiinqapootg.supabase.co/storage/v1/object/public/quest-covers/ae1b0ec4-e010-432f-986c-2645a1cf3bf7.jpg">
+    <p class="from" id="from" hidden></p>
+    <h1 id="title">Go somewhere in your city you have never been</h1>
+    <p class="sub" id="sub">A neighbourhood, a park, a market — anywhere new to you. Bring back one photo.</p>
     <div class="btns">
       <a class="btn primary" id="open" href="#">Open in the app</a>
       <a class="btn ghost" id="ios" href="https://apps.apple.com/us/app/sidequesting-club/id6801703458">Get it on iPhone</a>
@@ -175,6 +187,15 @@
       .catch(function () { go(''); });
   }
 
+  // ?from=<handle>, added by the app's "Invite friends". Display only — printed
+  // as text, never trusted — and held to the handle alphabet so a hand-edited
+  // link cannot put a sentence of its own on the page.
+  var from = qs.get('from');
+  if (from && /^[a-z0-9_.]{1,30}$/i.test(from)) {
+    var fromEl = document.getElementById('from');
+    fromEl.textContent = '@' + from + ' invited you';
+    fromEl.hidden = false;
+  }
   var t = qs.get('t');
   if (t) {
     document.getElementById('title').textContent = t;
