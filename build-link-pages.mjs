@@ -94,9 +94,10 @@ const OG = 'https://sidequesting.club/og.jpg';
 // comes off the bottom (cobblestone), never off them.
 const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
 
-// The quest covers in the database are picsum.photos placeholders, not
-// photographs of anything in particular. A random stock image on a card is
-// worse than the brand image, so quests keep OG until real covers exist.
+// Quest covers are real now (quest-covers-real.sql, 2026-09-15: one hand-picked
+// photo per quest on our own storage), so a quest's card is its own cover and
+// OG is only the fallback for a quest without one. This is what a friend sees
+// in the chat when somebody taps "Invite friends" in the app.
 
 // ─── challenges ──────────────────────────────────────────────────────────────
 {
@@ -197,7 +198,7 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
   const list = await rows(
     SUPABASE,
     ANON,
-    'quests?select=id,slug,title,description&is_active=eq.true&slug=not.is.null&order=created_at.desc'
+    'quests?select=id,slug,title,description,cover_url&is_active=eq.true&slug=not.is.null&order=created_at.desc'
   );
   if (!list.length) throw new Error('no active quests — refusing to write nothing');
   if (!src.includes("last !== 'q'")) throw new Error('path-derived slug logic gone from q/index.html');
@@ -210,8 +211,22 @@ const OG_CHALLENGE = 'https://sidequesting.club/og-challenge.jpg';
       title: q.title,
       desc: q.description,
       url: `https://sidequesting.club/q/${q.slug}/`,
-      image: OG,
+      image: q.cover_url || OG,
     });
+
+    // The BODY, not just the head. Every built page used to open on "Do hard
+    // things. Every day." whatever quest it was for, because only the slug
+    // fallback ever fetched a title — and a baked page never takes that path.
+    // A friend sent an invite landed on a slogan. Now the page is the quest.
+    const body = [
+      [/<h1 id="title">[^<]*<\/h1>/, `<h1 id="title">${esc(q.title)}</h1>`],
+      [/<p class="sub" id="sub">[^<]*<\/p>/, `<p class="sub" id="sub">${esc(q.description)}</p>`],
+    ];
+    if (q.cover_url) body.push([/<img class="cover" id="cover" alt="" hidden>/, `<img class="cover" id="cover" alt="" src="${esc(q.cover_url)}">`]);
+    for (const [re, to] of body) {
+      if (!re.test(out)) throw new Error(`body tag not found in q/index.html: ${re}`);
+      out = out.replace(re, to);
+    }
 
     // The id is known at build time, so skip the slug→id lookup entirely and
     // let the deep link fire on load like the challenge page does.
